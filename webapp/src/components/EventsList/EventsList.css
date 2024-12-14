@@ -1,0 +1,149 @@
+.container {
+  max-width: 64rem;
+  margin: 0 auto;
+  background-color: #111827;
+  padding: 1rem;
+  min-height: 100vh;
+  color: #e5e7eb;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  color: #60a5fa;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.2s;
+}
+
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-card {
+  background-color: #1f2937;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  margin: 10px;
+}
+
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9ca3af;
+  margin-bottom: 0.75rem;
+}
+
+.event-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.75rem;
+}
+
+.event-description {
+  color: #d1d5db;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-tag {
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tag {
+  background-color: #374151;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: white;
+}
+
+.social-features {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #374151;
+}
+
+.rsvp-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background-color: #374151;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rsvp-button.attending {
+  background-color: #22c55e;
+}
+
+.reaction-button {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  background-color: #374151;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.reaction-button.active.car {
+  background-color: #3b82f6;
+}
+
+.reaction-button.active.friend {
+  background-color: #ec4899;
+}
+
+.event-links {
+  margin-top: 0.75rem;
+}
+
+.event-link {
+  display: inline-flex;
+  align-items: center;
+  color: #60a5fa;
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-right: 1rem;
+}
+
+.event-link:last-child {
+  margin-right: 0;
+}
