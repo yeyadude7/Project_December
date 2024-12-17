@@ -11,7 +11,7 @@ const EventHeader = () => {
           <p className="text-xl font-bold">UCF Events</p>
         </div>
         <div className="mt-2">
-          <Link to="/editprofile">
+          <Link to="/mainprofile">
             <p className="text-sm"> ← Back to profile</p>
           </Link>
         </div>
