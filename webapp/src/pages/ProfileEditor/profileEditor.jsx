@@ -88,7 +88,7 @@ const ProfileEditor = ({ onBack, onSave }) => {
         {/* Header */}
         <div className=" flex items-center justify-between mb-8">
           <div className="text-gray-500 text-sm">Edit Profile</div>
-          <Link to= "/events">
+          <Link to= "/mainprofile">
           <button
             // onClick={onBack}
             className="text-blue-500 flex items-center gap-1 text-sm hover:text-blue-600 transition-colors"
