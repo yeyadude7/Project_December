@@ -1,8 +1,11 @@
+import StickyNavbar from "../../components/StickyNavbar/stickyNavbar";
 
 
 const AboutMe = () => {
 
-    return (<div></div>);
+    return (<div>
+        <StickyNavbar />
+    </div>);
 }
 
 export default AboutMe;
