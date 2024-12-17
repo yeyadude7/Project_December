@@ -17,7 +17,7 @@ const Friends = () => {
         <h1 className="font-bold text-2xl text-center">Connect</h1>
 
         {/* Search Bar */}
-        <div class="w-full max-w-sm min-w-[200px]">
+        <div class="flex items-center justify-center">
           <div class="relative flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,25 @@ const Friends = () => {
           </div>
         </div>
 
-        
+
+        {/* Profile Cards */}
+
+        <div className=" items-center justify-center">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">Card 1</div>
+            <p class="text-gray-700 text-base">Description</p>
+          </div>
+        </div>
+
+        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+          <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">Card 2</div>
+            <p class="text-gray-700 text-base">Description</p>
+          </div>
+        </div>
+      </div>
+
       </div>
     </div>
   );
