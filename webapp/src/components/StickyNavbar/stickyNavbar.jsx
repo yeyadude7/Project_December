@@ -3,14 +3,14 @@ import React from 'react';
 function StickyNavbar() {
     return (
         <div className="fixed bottom-0 w-svw h-20 flex justify-center items-center border-t-1 border-zinc-200">
-            <div className="w-full bg-white/80 h-full grid grid-cols-5 backdrop-blur-md max-w-screen-md">
+            <div className="w-full bg-white/80 gap-1 h-full flex justify-evenly backdrop-blur-md max-w-screen-md px-4">
                 <NavbarButton text="Discover" href=""/>
                 <NavbarButton text="Events" href="events"/>
                 <div className="flex justify-center items-center">
                     <button className="pb-1 bg-highlight h-12 w-12 text-3xl rounded-full text-white hover:brightness-150 transition-all">+</button>
                 </div>
-                <NavbarButton text="Matches" href="friends"/>
-                <NavbarButton text="Profile" href="aboutme" />
+                <NavbarButton text="Friends" href="friends"/>
+                <NavbarButton text="Profile" href="mainprofile" />
             </div>
         </div>
     );
