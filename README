@@ -21,6 +21,17 @@ From here, install any necessary dependencies within the folder, and run the dev
 npm install
 npm start
 
+To run the server locally, go into the server/.env file and insert information for your postgresql database.
+
+Then open a new terminal seperate from the web application, cd into backend folder (called server):
+
+cd server
+
+From here install any necessary dependencies within the folder, and run the development server:
+
+npm install
+node server.js
+
 Current static hosting site:
 https://joseph-app-23imd.ondigitalocean.app/
 
