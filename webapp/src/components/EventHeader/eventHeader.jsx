@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./eventHeader.css";
 import Dropdown from "../Dropdown/dropdown";
+import { Link } from "react-router-dom";
 
 const EventHeader = () => {
   return (
@@ -10,7 +11,9 @@ const EventHeader = () => {
           <p className="text-xl font-bold">UCF Events</p>
         </div>
         <div className="mt-2">
-          <p className="text-sm"> ← Back to profile</p>
+          <Link to="/profile">
+            <p className="text-sm"> ← Back to profile</p>
+          </Link>
         </div>
         <div className="mt-2">
           <Dropdown />

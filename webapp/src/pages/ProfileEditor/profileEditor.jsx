@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArrowLeft, Plus, X, School, Clock, Heart, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ProfileEditor = ({ onBack, onSave }) => {
   const [formData, setFormData] = useState({
@@ -87,12 +88,14 @@ const ProfileEditor = ({ onBack, onSave }) => {
         {/* Header */}
         <div className=" flex items-center justify-between mb-8">
           <div className="text-gray-500 text-sm">Edit Profile</div>
+          <Link to= "/events">
           <button
-            onClick={onBack}
+            // onClick={onBack}
             className="text-blue-500 flex items-center gap-1 text-sm hover:text-blue-600 transition-colors"
           >
             <ArrowLeft size={16} /> Cancel
           </button>
+          </Link>
         </div>
 
         {/* Basic Info Section */}

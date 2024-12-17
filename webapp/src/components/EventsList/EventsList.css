@@ -131,6 +131,14 @@
   background-color: #ec4899;
 }
 
+.reaction-button.active.drinks {
+  background-color: #ec9d48;
+}
+
+.reaction-button.active.romance {
+  background-color: #e11e1e;
+}
+
 .event-links {
   margin-top: 0.75rem;
 }

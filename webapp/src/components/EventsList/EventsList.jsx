@@ -20,6 +20,7 @@ const EventsList = () => {
           "trauma",
           "mental health",
         ],
+        people: 5
       },
       {
         id: "894110",
@@ -37,6 +38,7 @@ const EventsList = () => {
           "IES",
           "campus tour",
         ],
+        people: 7
       },
       {
         id: "894116",
@@ -47,6 +49,7 @@ const EventsList = () => {
         starts: "Fri, 22 Nov 2024 12:00:00 -0500",
         category: "Academic",
         tags: ["Writing Lab", "writing", "University Writing Center"],
+        people: 10
       },
       {
         id: "887364",
@@ -62,6 +65,7 @@ const EventsList = () => {
           "UCF Blackstone Launchpad",
           "Arts Innovation Competition",
         ],
+        people: 20
       },
       {
         id: "922281",
@@ -73,6 +77,7 @@ const EventsList = () => {
         starts: "Fri, 22 Nov 2024 15:00:00 -0500",
         category: "Tour/Open House/Information Session",
         tags: ["IES Inclusive Education Services Inclusive"],
+        people: 2
       },
       {
         id: "865975",
@@ -91,6 +96,7 @@ const EventsList = () => {
           "UCF SVAD",
           "Open House",
         ],
+        people: 8
       },
       {
         id: "912610",
@@ -101,6 +107,7 @@ const EventsList = () => {
         starts: "Fri, 22 Nov 2024 19:00:00 -0500",
         category: "Concert/Performance",
         tags: ["Music", "ucf music"],
+        people: 30
       },
     ].map((event) => ({
       ...event,
@@ -108,6 +115,8 @@ const EventsList = () => {
       reactions: {
         car: [],
         friend: [],
+        drinks: [],
+        romance: [],
       },
     }))
   );
@@ -179,6 +188,7 @@ const EventsList = () => {
     return colors[category] || "#6b7280";
   };
 
+  
   return events.map((event) => (
     <>
       <div className="event-card" key={event.id}>
@@ -190,7 +200,7 @@ const EventsList = () => {
 
         <h3 className="event-title">{event.title}</h3>
         <p className="event-description">{event.description}</p>
-
+        {/* <p className="event-description">{event.people} people attending</p> */}
         <div className="tags-container">
           <span
             className="category-tag"
@@ -203,6 +213,8 @@ const EventsList = () => {
               {tag}
             </span>
           ))}
+          <span className="tag">{event.people} attendees</span>
+          
         </div>
 
         <div className="social-features">
@@ -243,6 +255,30 @@ const EventsList = () => {
             title="Looking to make friends"
           >
             💝
+          </button>
+
+          <button
+            onClick={() => handleReaction(event.id, "drinks")}
+            className={`reaction-button ${
+              event.reactions.drinks.find((u) => u.id === currentUser.id)
+                ? "active drinks"
+                : ""
+            }`}
+            title="Looking for social drinking"
+          >
+            🍹
+          </button>
+
+          <button
+            onClick={() => handleReaction(event.id, "romance")}
+            className={`reaction-button ${
+              event.reactions.romance.find((u) => u.id === currentUser.id)
+                ? "active romance"
+                : ""
+            }`}
+            title="Looking for romance"
+          >
+            💌
           </button>
         </div>
 
