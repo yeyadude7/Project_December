@@ -45,6 +45,10 @@ To reset the database (recreate schema and populate data):
 
 npm run reset-db
 
+Unit-tests can be run using:
+
+npm test
+
 From here run the development server:
 
 node server.js
