@@ -2,7 +2,7 @@ This is the official README for Project December
 
 Running the web application (for development):
 
-This web application was built utilizing a Linux distribution known as Ubuntu. The version of Ubuntu utilized is 22.04. For Mac developers, Mac has optimized support for sudo and git controls. However, Windows users may resort to using WSL, a Linux environment supported for Windows users or possily a VM. 
+This web application was built utilizing a Linux distribution known as Ubuntu. The version of Ubuntu utilized is 22.04. For Mac developers, Mac has optimized support for sudo and git controls. However, Windows users may resort to using WSL, a Linux environment supported for Windows users or possily a VM.
 
 The frontend of this application was built using ReactJS (JavaScript), and Tailwind CSS as the framework. Node Packet Manager (npm) and NodeJS, is utilized to handle necessary dependencies.
 
@@ -27,12 +27,27 @@ Then open a new terminal seperate from the web application, cd into backend fold
 
 cd server
 
-From here install any necessary dependencies within the folder, and run the development server:
+Install any necessary dependencies within the folder:
 
 npm install
+
+If this is your first time setting up the server there are commands to help.
+
+To set up the database schema:
+
+npm run setup-db
+
+To populate dummy data:
+
+npm run seed-db
+
+To reset the database (recreate schema and populate data):
+
+npm run reset-db
+
+From here run the development server:
+
 node server.js
 
 Current static hosting site:
 https://joseph-app-23imd.ondigitalocean.app/
-
-

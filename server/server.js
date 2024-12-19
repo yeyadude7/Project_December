@@ -10,18 +10,24 @@ const PORT = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
+//ROUTES//
+app.use("/api/user", require("./routes/user"));
+
 // Server listening Result
 app.listen(PORT, () => {
-  console.log(`Enviornment is in ${process.env.NODE_ENV} mode.`)
-  console.log(`Server running at http://localhost:${PORT}/`);
+    console.log(`Enviornment is in ${process.env.NODE_ENV} mode.`);
+    console.log(`Server running at http://localhost:${PORT}/`);
 });
 
 app.get("/api/test-db", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW()");
-    res.status(200).json({ success: true, time: result.rows[0] });
-  } catch (error) {
-    console.error("Database connection error:", error.message);
-    res.status(500).json({ success: false, message: "Database connection failed" });
-  }
+    try {
+        const result = await pool.query("SELECT NOW()");
+        res.status(200).json({ success: true, time: result.rows[0] });
+    } catch (error) {
+        console.error("Database connection error:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Database connection failed",
+        });
+    }
 });
