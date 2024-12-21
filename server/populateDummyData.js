@@ -54,6 +54,41 @@ const populateDummyData = async () => {
 			);
 		}
 
+		// Insert dummy data into the events table
+		for (let i = 0; i < 10; i++) {
+			const event_name = faker.word.noun();
+			const event_type = faker.number.int({ min: 1, max: 5 }); // Assuming 5 event types
+			const tags = faker.helpers.arrayElement([
+				"Technology",
+				"Networking",
+				"Health",
+				"Art",
+				"Education",
+			]);
+			const web_link = faker.internet.url();
+			const time = faker.date.soon(); // Random future date
+			const photo = faker.image.url();
+			const location = faker.location.streetAddress();
+			const latitude = faker.location.latitude();
+			const longitude = faker.location.longitude();
+
+			await pool.query(
+				`INSERT INTO events (event_name, event_type, tags, web_link, time, photo, location, latitude, longitude) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+				[
+					event_name,
+					event_type,
+					tags,
+					web_link,
+					time,
+					photo,
+					location,
+					latitude,
+					longitude,
+				]
+			);
+		}
+
 		console.log("Dummy data populated successfully!");
 	} catch (err) {
 		console.error("Error populating dummy data:", err.message);
