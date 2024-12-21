@@ -1,15 +1,16 @@
 CREATE DATABASE projectdecember;
 
-CREATE TABLE Users (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255),
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  major VARCHAR(255),
-  goal INT,
-  type_of_student VARCHAR(255),
-  year INT,
-  group_preference VARCHAR(255)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,                     -- Unique user ID
+    name VARCHAR(255) NOT NULL,               -- User's name
+    email VARCHAR(255) UNIQUE NOT NULL,       -- User's email
+    password VARCHAR(255) NOT NULL,           -- User's hashed password
+    major VARCHAR(255),                       -- User's major
+    goal INTEGER,                             -- User's goal (integer type)
+    photo VARCHAR(255),                       -- URL for user's photo
+    type_of_student VARCHAR(50),              -- User type (e.g., Undergraduate)
+    year VARCHAR(50),                         -- Academic year (e.g., Senior)
+    group_preference VARCHAR(255)             -- Group preference
 );
 
 CREATE TABLE events (
