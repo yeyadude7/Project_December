@@ -43,7 +43,6 @@ router.post("/create", async (req, res) => {
 			// Unique constraint violation (e.g., email already exists)
 			return res.status(409).json({ message: "Email is already in use." });
 		}
-		console.error(err.message);
 		res.status(500).send("Server error");
 	}
 });
