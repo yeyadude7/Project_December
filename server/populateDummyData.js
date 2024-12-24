@@ -3,6 +3,23 @@ const { faker } = require("@faker-js/faker"); // For generating fake data
 
 const populateDummyData = async () => {
 	try {
+		// Insert static interests into the interests table
+		const interests = [
+			"AI/ML",
+			"Photography",
+			"Basketball",
+			"Chess",
+			"Piano",
+			"Networking",
+			"Health",
+			"Education",
+			"Art",
+		];
+
+		for (const interest of interests) {
+			await pool.query(`INSERT INTO interests (name) VALUES ($1)`, [interest]);
+		}
+
 		// Insert dummy data into the users table
 		for (let i = 0; i < 15; i++) {
 			const name = faker.person.fullName();
@@ -37,9 +54,9 @@ const populateDummyData = async () => {
 				"Project Team",
 			]);
 
-			await pool.query(
+			const userResult = await pool.query(
 				`INSERT INTO users (name, email, password, major, goal, photo, type_of_student, year, group_preference) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
 				[
 					name,
 					email,
@@ -52,6 +69,26 @@ const populateDummyData = async () => {
 					group_preference,
 				]
 			);
+
+			// Assign random interests to the user
+			const userId = userResult.rows[0].id;
+			const selectedInterests = faker.helpers.arrayElements(interests, {
+				min: 1,
+				max: 5,
+			});
+
+			for (const interestName of selectedInterests) {
+				const interestResult = await pool.query(
+					`SELECT id FROM interests WHERE name = $1`,
+					[interestName]
+				);
+				const interestId = interestResult.rows[0].id;
+
+				await pool.query(
+					`INSERT INTO user_interests (user_id, interest_id) VALUES ($1, $2)`,
+					[userId, interestId]
+				);
+			}
 		}
 
 		// Insert dummy data into the events table

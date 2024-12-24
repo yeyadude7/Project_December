@@ -3,6 +3,8 @@ const pool = require("./db"); // Import the db connection
 const setupDatabase = async () => {
 	try {
 		// Drop tables if they exist
+		await pool.query(`DROP TABLE IF EXISTS user_interests CASCADE;`);
+		await pool.query(`DROP TABLE IF EXISTS interests CASCADE;`);
 		await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
 		await pool.query(`DROP TABLE IF EXISTS events CASCADE;`);
 
@@ -35,6 +37,25 @@ const setupDatabase = async () => {
                 location VARCHAR(255),
                 latitude VARCHAR(50),
                 longitude VARCHAR(50)
+            );
+        `);
+
+		// Create the interests table (Static list of interests)
+		await pool.query(`
+            CREATE TABLE interests (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL UNIQUE
+            );
+        `);
+
+		// Create the user_interests table (User-selected interests)
+		await pool.query(`
+            CREATE TABLE user_interests (
+                user_id INTEGER NOT NULL,
+                interest_id INTEGER NOT NULL,
+                PRIMARY KEY (user_id, interest_id),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
             );
         `);
 
