@@ -34,3 +34,13 @@ CREATE TABLE event_attendance (
     FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE friendship_status (
+    user1_id INTEGER NOT NULL,
+    user2_id INTEGER NOT NULL,
+    status VARCHAR(10) NOT NULL, -- "pending", "accepted", or "rejected"
+    created_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (user1_id, user2_id),
+    CONSTRAINT fk_user1 FOREIGN KEY (user1_id) REFERENCES users(id),
+    CONSTRAINT fk_user2 FOREIGN KEY (user2_id) REFERENCES users(id)
+);

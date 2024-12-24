@@ -4,6 +4,7 @@ const { faker } = require("@faker-js/faker"); // For generating fake data
 const populateDummyData = async () => {
 	try {
 		// Insert dummy data into the users table
+		const userIds = [];
 		for (let i = 0; i < 15; i++) {
 			const name = faker.person.fullName();
 			const email = faker.internet.email();
@@ -37,9 +38,9 @@ const populateDummyData = async () => {
 				"Project Team",
 			]);
 
-			await pool.query(
+			const res = await pool.query(
 				`INSERT INTO users (name, email, password, major, goal, photo, type_of_student, year, group_preference) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
 				[
 					name,
 					email,
@@ -52,6 +53,8 @@ const populateDummyData = async () => {
 					group_preference,
 				]
 			);
+
+			userIds.push(res.rows[0].id);
 		}
 
 		// Insert dummy data into the events table
@@ -86,6 +89,22 @@ const populateDummyData = async () => {
 					latitude,
 					longitude,
 				]
+			);
+		}
+
+		// Insert dummy friendships and requests
+		for (let i = 0; i < 10; i++) {
+			const user1 = faker.helpers.arrayElement(userIds);
+			let user2 = faker.helpers.arrayElement(userIds);
+			while (user1 === user2) {
+				user2 = faker.helpers.arrayElement(userIds);
+			}
+			const status = faker.helpers.arrayElement(["pending", "accepted"]);
+
+			await pool.query(
+				`INSERT INTO friendship_status (user1_id, user2_id, status) 
+                 VALUES ($1, $2, $3)`,
+				[user1, user2, status]
 			);
 		}
 
