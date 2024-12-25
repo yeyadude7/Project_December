@@ -21,6 +21,7 @@ const populateDummyData = async () => {
 		}
 
 		// Insert dummy data into the users table
+		const userIds = [];
 		for (let i = 0; i < 15; i++) {
 			const name = faker.person.fullName();
 			const email = faker.internet.email();
@@ -123,6 +124,22 @@ const populateDummyData = async () => {
 					latitude,
 					longitude,
 				]
+			);
+		}
+
+		// Insert dummy friendships and requests
+		for (let i = 0; i < 10; i++) {
+			const user1 = faker.helpers.arrayElement(userIds);
+			let user2 = faker.helpers.arrayElement(userIds);
+			while (user1 === user2) {
+				user2 = faker.helpers.arrayElement(userIds);
+			}
+			const status = faker.helpers.arrayElement(["pending", "accepted"]);
+
+			await pool.query(
+				`INSERT INTO friendship_status (user1_id, user2_id, status) 
+                 VALUES ($1, $2, $3)`,
+				[user1, user2, status]
 			);
 		}
 

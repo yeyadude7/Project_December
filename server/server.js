@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api/user", require("./routes/user"));
 app.use("/api/event", require("./routes/event"));
 app.use("/api/interest", require("./routes/interest"));
+app.use("/api/friend", require("./routes/friend"));
 
 // Server listening Result
 app.listen(PORT, () => {

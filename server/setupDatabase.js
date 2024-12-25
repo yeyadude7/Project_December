@@ -5,6 +5,7 @@ const setupDatabase = async () => {
 		// Drop tables if they exist
 		await pool.query(`DROP TABLE IF EXISTS user_interests CASCADE;`);
 		await pool.query(`DROP TABLE IF EXISTS interests CASCADE;`);
+		await pool.query(`DROP TABLE IF EXISTS friendship_status CASCADE;`);
 		await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
 		await pool.query(`DROP TABLE IF EXISTS events CASCADE;`);
 
@@ -40,6 +41,7 @@ const setupDatabase = async () => {
             );
         `);
 
+
 		// Create the interests table (Static list of interests)
 		await pool.query(`
             CREATE TABLE interests (
@@ -56,6 +58,20 @@ const setupDatabase = async () => {
                 PRIMARY KEY (user_id, interest_id),
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
+             );
+        `);
+
+	  // Create the friendship_status table
+		await pool.query(`
+            CREATE TABLE friendship_status (
+                user1_id INTEGER NOT NULL,
+                user2_id INTEGER NOT NULL,
+                status VARCHAR(10) NOT NULL,
+                created_at TIMESTAMP DEFAULT NOW(),
+                PRIMARY KEY (user1_id, user2_id),
+                CONSTRAINT fk_user1 FOREIGN KEY (user1_id) REFERENCES users(id),
+                CONSTRAINT fk_user2 FOREIGN KEY (user2_id) REFERENCES users(id)
+
             );
         `);
 
