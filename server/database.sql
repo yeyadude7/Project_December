@@ -35,6 +35,13 @@ CREATE TABLE event_attendance (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE user_interests (
+    user_id INTEGER NOT NULL,
+    interest_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, interest_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
+
 CREATE TABLE friendship_status (
     user1_id INTEGER NOT NULL,
     user2_id INTEGER NOT NULL,
