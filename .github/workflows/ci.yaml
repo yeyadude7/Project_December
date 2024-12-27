@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "server/**"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "server/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository
+      - uses: actions/checkout@v3
+
+      # 2. Use Node.js 16
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # 3. Install dependencies in ./server
+      - name: Install Server Dependencies
+        working-directory: ./server
+        run: npm install
+
+      # 4. Run "core" tests (which ignore __tests__/db/).
+      - name: Run Core Tests (No DB)
+        working-directory: ./server
+        run: npm run test:core

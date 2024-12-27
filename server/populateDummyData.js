@@ -170,10 +170,10 @@ const populateDummyData = async () => {
 					);
 				}
 			} catch (err) {
-				console.error("Error inserting friendship1:", err);
+				console.error("Error inserting friendship:", err);
 			}
 		}
-		//test change
+
 		// ---------- Insert dummy friend requests ----------
 		for (let i = 0; i < 10; i++) {
 			try {

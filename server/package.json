@@ -7,6 +7,7 @@
 		"seed-db": "node populateDummyData.js",
 		"reset-db": "npm run setup-db && npm run seed-db",
 		"test": "jest",
+		"test:core": "jest --testPathIgnorePatterns=__tests__/db/",
 		"test:file": "jest"
 	},
 	"author": "David Umanzor",
