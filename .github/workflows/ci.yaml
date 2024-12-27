@@ -58,5 +58,5 @@ jobs:
           DB_PORT: 5432
           DB_USER: postgres
           DB_PASSWORD: admin
-          DB_NAME: mytestdb
+          DB_NAME: postgres
         run: npm run test:db
