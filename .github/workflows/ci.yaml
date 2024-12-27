@@ -14,14 +14,13 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    # Start a Postgres service container for DB tests
     services:
       postgres:
         image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: admin
-          POSTGRES_DB: mytestdb
+          POSTGRES_DB: postgres
         ports:
           - 5432:5432
         options: >-
@@ -31,32 +30,24 @@ jobs:
           --health-retries 5
 
     steps:
-      # 1. Check out your repo
       - uses: actions/checkout@v3
 
-      # 2. Set up Node
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # 3. Install dependencies in the server folder
       - name: Install Server Dependencies
         working-directory: ./server
         run: npm install
 
-      # 4. Run normal tests (no DB needed)
-      - name: Run Regular Tests
-        working-directory: ./server
-        run: npm test
-
-      # 5. Run DB tests (populateDummyData, etc.)
-      - name: Run DB Tests
+      # Here is where you set your ENV variables for the test
+      - name: Run Tests (including DB tests)
         working-directory: ./server
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 5432
+          DB_NAME: postgres
           DB_USER: postgres
           DB_PASSWORD: admin
-          DB_NAME: postgres
         run: npm run test:db
