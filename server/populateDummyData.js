@@ -1,31 +1,48 @@
-const pool = require("./db"); // Import the db connection
-const { faker } = require("@faker-js/faker"); // For generating fake data
+// populateDummyData.js
+
+const pool = require("./db");
+const { faker } = require("@faker-js/faker");
 
 const populateDummyData = async () => {
 	try {
-		// Insert static interests into the interests table
-		const interests = [
-			"AI/ML",
-			"Photography",
-			"Basketball",
-			"Chess",
-			"Piano",
-			"Networking",
-			"Health",
-			"Education",
-			"Art",
-		];
+		console.log("Starting to populate dummy data...");
 
-		for (const interest of interests) {
-			await pool.query(`INSERT INTO interests (name) VALUES ($1)`, [interest]);
+		// Insert static interests (with ON CONFLICT to avoid duplicates)
+		const interestNames = [
+			"Technology",
+			"Art",
+			"Sports",
+			"Gaming",
+			"Education",
+			"Music",
+		];
+		const interestIds = [];
+		for (const interest of interestNames) {
+			const insertResult = await pool.query(
+				`INSERT INTO interests (name) VALUES ($1)
+         ON CONFLICT (name) DO NOTHING
+         RETURNING id`,
+				[interest]
+			);
+			if (insertResult.rows.length > 0) {
+				// Inserted a new interest
+				interestIds.push(insertResult.rows[0].id);
+			} else {
+				// Interest already exists, get its ID
+				const existing = await pool.query(
+					`SELECT id FROM interests WHERE name = $1`,
+					[interest]
+				);
+				interestIds.push(existing.rows[0].id);
+			}
 		}
 
-		// Insert dummy data into the users table
+		// ---------- Insert dummy users ----------
 		const userIds = [];
 		for (let i = 0; i < 15; i++) {
 			const name = faker.person.fullName();
 			const email = faker.internet.email();
-			const password = faker.internet.password(); // You can hash this if needed
+			const password = faker.internet.password();
 			const major = faker.helpers.arrayElement([
 				"Computer Science",
 				"Mathematics",
@@ -56,8 +73,10 @@ const populateDummyData = async () => {
 			]);
 
 			const userResult = await pool.query(
-				`INSERT INTO users (name, email, password, major, goal, photo, type_of_student, year, group_preference) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+				`INSERT INTO users 
+         (name, email, password, major, goal, photo, type_of_student, year, group_preference) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING id`,
 				[
 					name,
 					email,
@@ -70,32 +89,28 @@ const populateDummyData = async () => {
 					group_preference,
 				]
 			);
+			userIds.push(userResult.rows[0].id);
+		}
 
-			// Assign random interests to the user
-			const userId = userResult.rows[0].id;
-			const selectedInterests = faker.helpers.arrayElements(interests, {
-				min: 1,
-				max: 5,
-			});
-
-			for (const interestName of selectedInterests) {
-				const interestResult = await pool.query(
-					`SELECT id FROM interests WHERE name = $1`,
-					[interestName]
-				);
-				const interestId = interestResult.rows[0].id;
-
+		// ---------- Assign interests to users ----------
+		for (const userId of userIds) {
+			const randomInterests = faker.helpers.arrayElements(
+				interestIds,
+				faker.number.int({ min: 2, max: 5 })
+			);
+			for (const interestId of randomInterests) {
 				await pool.query(
-					`INSERT INTO user_interests (user_id, interest_id) VALUES ($1, $2)`,
+					`INSERT INTO user_interests (user_id, interest_id)
+           VALUES ($1, $2)`,
 					[userId, interestId]
 				);
 			}
 		}
 
-		// Insert dummy data into the events table
+		// ---------- Insert dummy events ----------
 		for (let i = 0; i < 10; i++) {
-			const event_name = faker.word.noun();
-			const event_type = faker.number.int({ min: 1, max: 5 }); // Assuming 5 event types
+			const eventName = faker.word.noun();
+			const eventType = faker.number.int({ min: 1, max: 5 }); // e.g. 5 event types
 			const tags = faker.helpers.arrayElement([
 				"Technology",
 				"Networking",
@@ -103,22 +118,23 @@ const populateDummyData = async () => {
 				"Art",
 				"Education",
 			]);
-			const web_link = faker.internet.url();
-			const time = faker.date.soon(); // Random future date
+			const webLink = faker.internet.url();
+			const startTime = faker.date.soon();
 			const photo = faker.image.url();
 			const location = faker.location.streetAddress();
 			const latitude = faker.location.latitude();
 			const longitude = faker.location.longitude();
 
 			await pool.query(
-				`INSERT INTO events (event_name, event_type, tags, web_link, time, photo, location, latitude, longitude) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+				`INSERT INTO events 
+         (event_name, event_type, tags, web_link, start_time, photo, location, latitude, longitude)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
 				[
-					event_name,
-					event_type,
+					eventName,
+					eventType,
 					tags,
-					web_link,
-					time,
+					webLink,
+					startTime,
 					photo,
 					location,
 					latitude,
@@ -127,28 +143,75 @@ const populateDummyData = async () => {
 			);
 		}
 
-		// Insert dummy friendships and requests
-		for (let i = 0; i < 10; i++) {
-			const user1 = faker.helpers.arrayElement(userIds);
-			let user2 = faker.helpers.arrayElement(userIds);
-			while (user1 === user2) {
-				user2 = faker.helpers.arrayElement(userIds);
-			}
-			const status = faker.helpers.arrayElement(["pending", "accepted"]);
+		// ---------- Insert dummy friendships ----------
+		for (let i = 0; i < 20; i++) {
+			try {
+				let user1_id = faker.helpers.arrayElement(userIds);
+				let user2_id = faker.helpers.arrayElement(userIds);
 
-			await pool.query(
-				`INSERT INTO friendship_status (user1_id, user2_id, status) 
-                 VALUES ($1, $2, $3)`,
-				[user1, user2, status]
-			);
+				while (user1_id === user2_id) {
+					user2_id = faker.helpers.arrayElement(userIds);
+				}
+
+				const [small, large] =
+					user1_id < user2_id ? [user1_id, user2_id] : [user2_id, user1_id];
+
+				const existing = await pool.query(
+					`SELECT 1 FROM friendship_status
+           WHERE user1_id = $1 AND user2_id = $2`,
+					[small, large]
+				);
+
+				if (existing.rows.length === 0) {
+					await pool.query(
+						`INSERT INTO friendship_status (user1_id, user2_id, status)
+             VALUES ($1, $2, $3)`,
+						[small, large, "friends"]
+					);
+				}
+			} catch (err) {
+				console.error("Error inserting friendship:", err);
+			}
+		}
+
+		// ---------- Insert dummy friend requests ----------
+		for (let i = 0; i < 10; i++) {
+			try {
+				let sender_id = faker.helpers.arrayElement(userIds);
+				let receiver_id = faker.helpers.arrayElement(userIds);
+
+				while (sender_id === receiver_id) {
+					receiver_id = faker.helpers.arrayElement(userIds);
+				}
+
+				const [small, large] =
+					sender_id < receiver_id
+						? [sender_id, receiver_id]
+						: [receiver_id, sender_id];
+
+				const existing = await pool.query(
+					`SELECT 1 FROM friendship_status
+           WHERE user1_id = $1 AND user2_id = $2`,
+					[small, large]
+				);
+
+				if (existing.rows.length === 0) {
+					await pool.query(
+						`INSERT INTO friendship_status (user1_id, user2_id, status)
+             VALUES ($1, $2, $3)`,
+						[sender_id, receiver_id, "pending"]
+					);
+				}
+			} catch (err) {
+				console.error("Error inserting friend request:", err);
+			}
 		}
 
 		console.log("Dummy data populated successfully!");
 	} catch (err) {
 		console.error("Error populating dummy data:", err.message);
-	} finally {
-		pool.end(); // Close the database connection
+		throw err;
 	}
 };
 
-populateDummyData();
+module.exports = populateDummyData;
