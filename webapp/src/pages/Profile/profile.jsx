@@ -110,7 +110,7 @@ const Profile = () => {
         </div>
 
       </div>
-      {/* <StickyNavbar /> */}
+      <StickyNavbar />
     </>
   );
 };
