@@ -1,0 +1,30 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"setup-db": "node setupDatabase.js",
+		"seed-db": "node populateDummyData.js",
+		"reset-db": "npm run setup-db && npm run seed-db",
+		"test": "jest",
+		"test:core": "jest --testPathIgnorePatterns=__tests__/db/",
+		"test:file": "jest"
+	},
+	"author": "David Umanzor",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"jsonwebtoken": "^9.0.2",
+		"pg": "^8.13.1"
+	},
+	"devDependencies": {
+		"@faker-js/faker": "^9.3.0",
+		"jest": "^29.7.0",
+		"prettier": "3.4.2",
+		"supertest": "^7.0.0"
+	}
+}

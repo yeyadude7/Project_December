@@ -1,0 +1,10 @@
+.interest_tag {
+    background-color: rgb(122, 202, 228);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: white;
+    margin-top: 7px;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
