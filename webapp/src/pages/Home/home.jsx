@@ -6,9 +6,7 @@ import StickyNavbar from "../../components/StickyNavbar/stickyNavbar.jsx"
 const Home = () => {
   return (
     <>
-      <div>
-        <h1>This is the header</h1>
-      </div>
+      
       <div>
         <h1 className="font-bold text-center text-blue-600 text-2xl">
           Explore new events, experience new places, engage with community
