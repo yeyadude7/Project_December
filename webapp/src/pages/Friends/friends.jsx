@@ -79,7 +79,7 @@ const Friends = () => {
               </button>
             </Link>
           </div>
-          <h1 className="font-bold text-2xl text-center pb-4">Connect</h1>
+          <h1 className="font-bold text-3xl text-center pb-4">Connect</h1>
 
           {/* Search Bar */}
           <div className="relative flex items-center justify-center w-fit place-self-center">
@@ -172,7 +172,7 @@ const Friends = () => {
 // Profile card for users in friends page
 function ProfileCard(props) {
   return (
-    <div className="rounded-3xl overflow-hidden border-1 bg-white shadow-md w-fit relative">
+    <div className="rounded-3xl overflow-hidden border-1 bg-white shadow-md w-[21rem] relative mb-3">
       <div className="w-full">
         <div className="absolute right-2 top-2 flex gap-2">
           <Tag text={props.compatability + "%"} color="blue" />
