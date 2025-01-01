@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <div className="flex flex-col relative items-center justify-center bg-white mb-20">
-        <h1 className="pt-20 pr-20 text-5xl font-light">Connect</h1>
+        <h1 className="pt-20 pr-20 text-5xl font-light">PeerLink</h1>
 
         <QuoteLine/>
 
