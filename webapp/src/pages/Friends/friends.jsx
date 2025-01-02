@@ -82,7 +82,7 @@ const Friends = () => {
               </button>
             </Link>
           </div>
-          <h1 className="font-bold text-2xl text-center pb-4">Connect</h1>
+          <h1 className="font-bold text-3xl text-center pb-4">Connect</h1>
 
           {/* Search Bar */}
           <div className="relative flex items-center justify-center w-fit place-self-center">
@@ -172,5 +172,6 @@ const Friends = () => {
     </div>
   );
 };
+
 
 export default Friends;

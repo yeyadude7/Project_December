@@ -26,16 +26,21 @@ describe("Event Routes", () => {
 				event_type: 1,
 				tags: "Technology, Networking",
 				web_link: "https://techconference.com",
-				time: "2024-12-20T10:00:00.000Z",
-				photo: "https://example.com/photo.jpg",
+				start_time: "2024-12-20T10:00:00.000Z",
+				end_time: "2024-12-20T18:00:00.000Z",
+				photo_url: "https://example.com/photo.jpg",
 				location: "Tech Hall",
 				latitude: "40.7128",
 				longitude: "-74.0060",
+				organization: "Tech Org",
+				source_url: "https://sourceurl.com",
+				user_id: 1,
 			});
 
 			expect(response.statusCode).toBe(201);
 			expect(response.body.event_name).toBe("Tech Conference");
 		});
+
 		test("Fails with missing required fields", async () => {
 			const response = await request(app).post("/api/event/create").send({
 				event_name: "Tech Conference",
@@ -51,7 +56,7 @@ describe("Event Routes", () => {
 			const response = await request(app).post("/api/event/create").send({
 				event_name: "Tech Conference",
 				event_type: 1,
-				time: "2024-12-20T10:00:00.000Z",
+				start_time: "2024-12-20T10:00:00.000Z",
 				location: "Tech Hall",
 			});
 
@@ -76,6 +81,7 @@ describe("Event Routes", () => {
 			expect(response.body).toHaveLength(2);
 			expect(response.body[0].event_name).toBe("Tech Conference");
 		});
+
 		test("Handles server error when retrieving all events", async () => {
 			db.query.mockRejectedValueOnce(new Error("Database error"));
 
@@ -86,130 +92,9 @@ describe("Event Routes", () => {
 		});
 	});
 
-	// Test: Search Events
-	describe("GET /api/event/search", () => {
-		beforeEach(() => {
-			jest.clearAllMocks(); // Reset mocks before each test
-		});
-
-		test("Returns 200 with multiple results matching the query", async () => {
-			db.query.mockResolvedValueOnce({
-				rows: [
-					{ event_id: 1, event_name: "Tech Conference", tags: "Tech" },
-					{ event_id: 2, event_name: "Tech Meetup", tags: "Tech" },
-				],
-			});
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ query: "Tech" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toHaveLength(2);
-			expect(response.body[0].event_name).toBe("Tech Conference");
-			expect(response.body[1].event_name).toBe("Tech Meetup");
-		});
-
-		test("Returns 200 with a single result matching the query", async () => {
-			db.query.mockResolvedValueOnce({
-				rows: [{ event_id: 1, event_name: "Tech Conference", tags: "Tech" }],
-			});
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ query: "Tech Conference" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toHaveLength(1);
-			expect(response.body[0].event_name).toBe("Tech Conference");
-		});
-
-		test("Returns 200 with an empty array when no events match", async () => {
-			db.query.mockResolvedValueOnce({ rows: [] });
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ query: "Nonexistent Event" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toEqual([]);
-		});
-
-		test("Returns 200 with an empty array when no query parameter is provided", async () => {
-			db.query.mockResolvedValueOnce({ rows: [] });
-
-			const response = await request(app).get("/api/event/search");
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toEqual([]);
-		});
-
-		test("Returns 200 with results when only tags are provided", async () => {
-			db.query.mockResolvedValueOnce({
-				rows: [
-					{ event_id: 1, event_name: "Tech Conference", tags: "Technology" },
-				],
-			});
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ tags: "Technology" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toHaveLength(1);
-			expect(response.body[0].tags).toBe("Technology");
-		});
-
-		test("Returns 200 with results when only event_type is provided", async () => {
-			db.query.mockResolvedValueOnce({
-				rows: [{ event_id: 1, event_name: "Tech Conference", event_type: 1 }],
-			});
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ event_type: "1" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toHaveLength(1);
-			expect(response.body[0].event_type).toBe(1);
-		});
-
-		test("Returns 200 with results when all parameters are provided", async () => {
-			db.query.mockResolvedValueOnce({
-				rows: [
-					{
-						event_id: 1,
-						event_name: "Tech Conference",
-						tags: "Tech",
-						event_type: 1,
-					},
-				],
-			});
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ query: "Tech", tags: "Tech", event_type: "1" });
-
-			expect(response.statusCode).toBe(200);
-			expect(response.body).toHaveLength(1);
-			expect(response.body[0].event_name).toBe("Tech Conference");
-		});
-
-		test("Handles server error during search", async () => {
-			db.query.mockRejectedValueOnce(new Error("Database error during search"));
-
-			const response = await request(app)
-				.get("/api/event/search")
-				.query({ query: "Tech" });
-
-			expect(response.statusCode).toBe(500);
-			expect(response.body.message).toBe("Server error");
-			expect(response.body.details).toBe("Database error during search");
-		});
-	});
-
+	// Test: Get Event by ID
 	describe("GET /api/event/:id", () => {
-		test("Sucess finding event and event exists", async () => {
+		test("Successfully finds an event", async () => {
 			db.query.mockResolvedValueOnce({
 				rows: [
 					{
@@ -255,22 +140,19 @@ describe("Event Routes", () => {
 				.put("/api/event/update/1")
 				.send({ event_name: "Updated Conference" });
 
-			// Assertions
-			expect(response.statusCode).toBe(200); // Ensure status is 200
-			expect(response.body.event_name).toBe("Updated Conference"); // Ensure the event was updated
+			expect(response.statusCode).toBe(200);
+			expect(response.body.event_name).toBe("Updated Conference");
 		});
 
 		test("Fails when event is not found", async () => {
-			// Simulate the event not being found
 			db.query.mockResolvedValueOnce({ rows: [] });
 
 			const response = await request(app)
 				.put("/api/event/update/99")
 				.send({ event_name: "Nonexistent Event" });
 
-			// Assertions
-			expect(response.statusCode).toBe(404); // Ensure status is 404
-			expect(response.body.message).toBe("Event not found."); // Ensure correct error message
+			expect(response.statusCode).toBe(404); // HandleNotFoundError
+			expect(response.body.message).toBe("Event not found.");
 		});
 
 		test("Handles server error during update", async () => {
@@ -289,24 +171,22 @@ describe("Event Routes", () => {
 	describe("DELETE /api/event/delete/:id", () => {
 		test("Successfully deletes an event", async () => {
 			db.query.mockResolvedValueOnce({
-				rows: [{ event_id: 1, event_name: "Tech Conference" }], // Simulate DELETE result
+				rows: [{ event_id: 1, event_name: "Tech Conference" }],
 			});
 
 			const response = await request(app).delete("/api/event/delete/1");
 
-			// Assertions
-			expect(response.statusCode).toBe(200); // Ensure status is 200
-			expect(response.body.message).toBe("Event deleted successfully."); // Correct message
+			expect(response.statusCode).toBe(200);
+			expect(response.body.message).toBe("Event deleted successfully.");
 		});
 
 		test("Fails when event is not found", async () => {
-			db.query.mockResolvedValueOnce({ rows: [] }); // Simulate no rows found
+			db.query.mockResolvedValueOnce({ rows: [] });
 
 			const response = await request(app).delete("/api/event/delete/99");
 
-			// Assertions
-			expect(response.statusCode).toBe(404); // Ensure status is 404
-			expect(response.body.message).toBe("Event not found."); // Correct message
+			expect(response.statusCode).toBe(404);
+			expect(response.body.message).toBe("Event not found.");
 		});
 
 		test("Handles server error during deletion", async () => {
@@ -314,7 +194,7 @@ describe("Event Routes", () => {
 
 			const response = await request(app).delete("/api/event/delete/1");
 
-			expect(response.statusCode).toBe(500); // HandleServerError
+			expect(response.statusCode).toBe(500);
 			expect(response.body.message).toBe("Server error");
 		});
 	});

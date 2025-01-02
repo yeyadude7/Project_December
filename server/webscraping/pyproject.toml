@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "webscraping"
+version = "0.1.0"
+description = "Scraps javascript from ucf event website to a simplified json format."
+authors = ["DavidUmanzor <DavidU00@hotmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+selenium = "^4.27.1"
+beautifulsoup4 = "^4.12.3"
+webdriver-manager = "^4.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
