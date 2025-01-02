@@ -198,4 +198,50 @@ router.delete("/delete/:id", async (req, res) => {
 	}
 });
 
+// Handle RSVP for any event
+router.post("/rsvp", async (req, res) => {
+    const { user_id, event_id, did_rsvp } = req.body;
+
+    if (!user_id || !event_id || did_rsvp === undefined) {
+        return res.status(400).json({ message: "Not getting input correctly." });
+    }
+
+    try {
+        const rsvpRecord = await pool.query(
+            "SELECT * FROM event_attendance WHERE user_id = $1 AND event_id = $2",
+            [user_id, event_id]
+        );
+
+        if (rsvpRecord.rows.length > 0) {
+            const updateRSVP = await pool.query(
+                `UPDATE event_attendance
+                 SET did_rsvp = $1
+                 WHERE user_id = $2 AND event_id = $3
+                 RETURNING *`,
+                [did_rsvp, user_id, event_id]
+            );
+
+            return res.status(200).json({
+                message: "RSVP status updated successfully.",
+                rsvp: updateRSVP.rows[0],
+            });
+        }
+
+        const newRSVP = await pool.query(
+            `INSERT INTO event_attendance (user_id, event_id, did_rsvp)
+             VALUES ($1, $2, $3)
+             RETURNING *`,
+            [user_id, event_id, did_rsvp]
+        );
+
+        return res.status(201).json({
+            message: "RSVP created successfully.",
+            rsvp: newRSVP.rows[0],
+        });
+    } catch (error) {
+        console.error("RSVP didn't work due to error - ", error.message);
+        return res.status(500).json({ message: "An error occurred while processing the RSVP." });
+    }
+});
+
 module.exports = router;
