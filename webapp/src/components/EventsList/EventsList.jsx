@@ -191,7 +191,7 @@ const EventsList = () => {
   
   return events.map((event) => (
     <>
-      <div className="event-card" key={event.id}>
+      <div className="event-card w-[21rem]" key={event.id}>
         <div className="event-meta">
           <span>🕒 {formatTime(event.starts)}</span>
           <span>|</span>
