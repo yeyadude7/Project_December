@@ -7,3 +7,12 @@
     color: white;
     margin-top: 7px;
   }
+  
+.status_tag {
+  background-color: rgb(26, 189, 86);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: white;
+  margin-top: 7px;
+}
