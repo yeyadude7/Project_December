@@ -127,22 +127,6 @@ const Profile = () => {
           </div>
         </div>
         
-        {/* Cards */}
-
-        <div className="pt-4 justify-center items-center">
-          <div>
-            <p className="pb-2 font-semibold">Concert videos/pictures/fun!</p>
-          </div>
-          <div className="columns-2">
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={christmasImage} className="object-fill"></img>
-            </div>
-
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={seminarImage} className="object-fill"></img>
-            </div>
-          </div>
-        </div>
       </div>
       <StickyNavbar />
     </>
