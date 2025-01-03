@@ -10,6 +10,7 @@ import Friends from "./pages/Friends/friends";
 import SignUp from "./pages/Signup/signup";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/home";
+import Status from "./pages/Status/status";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path = "/events" element = {<Events/>}/>
         <Route path = "/friends" element = {<Friends/>}/>
         <Route path = "/aboutme" element = {<AboutMe/>}/>
+        <Route path = "/status" element = {<Status/>}/>
         <Route path = "/mainprofile" element = {<Profile/>}/>
       </Routes>
     </BrowserRouter>

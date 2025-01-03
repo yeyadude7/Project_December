@@ -35,6 +35,9 @@ const Profile = () => {
             <Link to="/aboutme">
               <button className="more_tag right-0">Edit</button>
             </Link>
+            <Link to="/status" className="pl-2">
+              <button className="status_tag">My Status</button>
+            </Link>
           </div>
           {/* Profile description */}
           <div>
