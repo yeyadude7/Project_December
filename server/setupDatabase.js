@@ -45,7 +45,6 @@ const setupDatabase = async () => {
             CREATE TABLE events (
                 event_id SERIAL PRIMARY KEY,
                 event_name VARCHAR(255) NOT NULL,
-                event_type INTEGER NOT NULL,
                 tags VARCHAR(255),
                 web_link TEXT,
                 start_time TIMESTAMP NOT NULL,
@@ -56,7 +55,8 @@ const setupDatabase = async () => {
                 longitude DECIMAL(9, 6),
                 organization VARCHAR(255),
                 source_url TEXT UNIQUE,
-                user_id INTEGER REFERENCES users(id)
+                user_id INTEGER REFERENCES users(id),
+                no_of_attendees INTEGER NOT NULL DEFAULT 0
             );
         `);
 

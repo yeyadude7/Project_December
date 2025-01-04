@@ -17,6 +17,7 @@ app.use("/api/interest", require("./routes/interest"));
 app.use("/api/friend", require("./routes/friend"));
 app.use("/api/login", require("./routes/login"));
 app.use("/api/signup", require("./routes/signup"));
+app.use("/api/AiSearch", require("./routes/AiSearch"));
 
 // Server listening Result
 app.listen(PORT, () => {

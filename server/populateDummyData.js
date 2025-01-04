@@ -86,11 +86,10 @@ const populateDummyData = async () => {
 		for (let i = 0; i < 10; i++) {
 			await pool.query(
 				`INSERT INTO events 
-                 (event_name, event_type, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+                 (event_name, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
 				[
 					faker.lorem.words(3),
-					faker.number.int({ min: 1, max: 5 }),
 					faker.helpers.arrayElement([
 						"Technology",
 						"Networking",

@@ -11,7 +11,6 @@ const {
 router.post("/create", async (req, res) => {
 	const {
 		event_name,
-		event_type,
 		tags,
 		web_link,
 		start_time,
@@ -25,19 +24,18 @@ router.post("/create", async (req, res) => {
 		user_id,
 	} = req.body;
 
-	if (!event_name || !event_type || !start_time || !location) {
+	if (!event_name || !start_time || !location) {
 		return handleBadRequestError(res, "Missing required fields.");
 	}
 
 	try {
 		const newEvent = await pool.query(
 			`INSERT INTO events 
-            (event_name, event_type, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+            (event_name, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
             RETURNING *`,
 			[
 				event_name,
-				event_type,
 				tags,
 				web_link,
 				start_time,
@@ -70,16 +68,17 @@ router.get("/all", async (req, res) => {
 
 // Search Events
 router.get("/search", async (req, res) => {
-	const { query, tags, event_type } = req.query;
+	const { query, tags, start_time } = req.query;
 	const searchQuery = `%${query || ""}%`;
+	const searchTags = tags ? `%${tags}%` : null;
 
 	try {
 		const events = await pool.query(
 			`SELECT * FROM events 
-             WHERE (event_name ILIKE $1 OR tags ILIKE $1) 
+             WHERE (event_name ILIKE $1 OR tags ILIKE $1)
              AND ($2::text IS NULL OR tags ILIKE $2)
-             AND ($3::text IS NULL OR event_type = $3)`,
-			[searchQuery, tags ? `%${tags}%` : null, event_type]
+             AND ($3::timestamp IS NULL OR start_time >= $3)`,
+			[searchQuery, searchTags, start_time || null]
 		);
 
 		return res.status(200).json(events.rows);
@@ -88,7 +87,6 @@ router.get("/search", async (req, res) => {
 		handleServerError(res, err);
 	}
 });
-
 // Get Event by ID
 router.get("/:id", async (req, res) => {
 	const { id } = req.params;
@@ -113,7 +111,6 @@ router.put("/update/:id", async (req, res) => {
 	const { id } = req.params;
 	const {
 		event_name,
-		event_type,
 		tags,
 		web_link,
 		start_time,
@@ -132,7 +129,6 @@ router.put("/update/:id", async (req, res) => {
 			`UPDATE events 
              SET 
                  event_name = COALESCE($1, event_name),
-                 event_type = COALESCE($2, event_type),
                  tags = COALESCE($3, tags),
                  web_link = COALESCE($4, web_link),
                  start_time = COALESCE($5, start_time),
@@ -149,7 +145,6 @@ router.put("/update/:id", async (req, res) => {
              RETURNING *`,
 			[
 				event_name,
-				event_type,
 				tags,
 				web_link,
 				start_time,
@@ -206,41 +201,64 @@ router.post("/rsvp", async (req, res) => {
         return res.status(400).json({ message: "Not getting input correctly." });
     }
 
+    let client;
     try {
-        const rsvpRecord = await pool.query(
-            "SELECT * FROM event_attendance WHERE user_id = $1 AND event_id = $2",
+		client = await pool.connect();
+        await client.query("BEGIN");
+
+        // Check and update RSVP
+        const rsvpRecord = await client.query(
+            "SELECT did_rsvp FROM event_attendance WHERE user_id = $1 AND event_id = $2",
             [user_id, event_id]
         );
-
         if (rsvpRecord.rows.length > 0) {
-            const updateRSVP = await pool.query(
+            const existingRSVP = rsvpRecord.rows[0].did_rsvp;
+
+            await client.query(
                 `UPDATE event_attendance
                  SET did_rsvp = $1
-                 WHERE user_id = $2 AND event_id = $3
-                 RETURNING *`,
+                 WHERE user_id = $2 AND event_id = $3`,
                 [did_rsvp, user_id, event_id]
             );
 
-            return res.status(200).json({
-                message: "RSVP status updated successfully.",
-                rsvp: updateRSVP.rows[0],
-            });
+            if (existingRSVP !== did_rsvp) {
+                const adjustment = did_rsvp ? 1 : -1;
+                await client.query(
+                    `UPDATE events
+                     SET no_of_attendees = no_of_attendees + $1
+                     WHERE event_id = $2`,
+                    [adjustment, event_id]
+                );
+            }
+        } else {
+            await client.query(
+                `INSERT INTO event_attendance (user_id, event_id, did_rsvp)
+                 VALUES ($1, $2, $3)`,
+                [user_id, event_id, did_rsvp]
+            );
+
+            if (did_rsvp) {
+                await client.query(
+                    `UPDATE events
+                     SET no_of_attendees = no_of_attendees + 1
+                     WHERE event_id = $1`,
+                    [event_id]
+                );
+            }
         }
 
-        const newRSVP = await pool.query(
-            `INSERT INTO event_attendance (user_id, event_id, did_rsvp)
-             VALUES ($1, $2, $3)
-             RETURNING *`,
-            [user_id, event_id, did_rsvp]
-        );
-
-        return res.status(201).json({
-            message: "RSVP created successfully.",
-            rsvp: newRSVP.rows[0],
-        });
+        await client.query("COMMIT");
+        res.status(200).json({message: "RSVP processed successfully." });
     } catch (error) {
-        console.error("RSVP didn't work due to error - ", error.message);
-        return res.status(500).json({ message: "An error occurred while processing the RSVP." });
+        await client.query("ROLLBACK");
+        console.error("RSVP error:", error.message);
+        res.status(500).json({ message: "An error occurred while processing the RSVP." });
+    } finally {
+        if (client) {
+            client.release(); // Ensure client is released only if initialized
+        } else {
+            console.error("Client not initialized.");
+        }
     }
 });
 

@@ -16,7 +16,6 @@ CREATE TABLE users (
 CREATE TABLE events (
     event_id SERIAL PRIMARY KEY,  -- Unique identifier for each event
     event_name VARCHAR(255) NOT NULL,  -- Name of the event
-    event_type INTEGER NOT NULL,  -- Type/category of the event
     tags VARCHAR(255),  -- Tags or labels for the event
     web_link VARCHAR(255),  -- URL link to event details
     start_time TIMESTAMP NOT NULL,  -- Event date and time

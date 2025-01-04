@@ -5,9 +5,20 @@ const db = require("../db");
 
 jest.mock("../db"); // Mock database for testing
 
+
 const app = express();
 app.use(express.json());
 app.use("/api/event", eventRouter);
+
+let server;
+
+beforeAll(() => {
+  server = app.listen(3000); // Start the server before tests
+});
+
+afterAll(() => {
+	server.close(); // Close the server after tests
+  });
 
 describe("Event Routes", () => {
 	beforeEach(() => {
@@ -23,7 +34,6 @@ describe("Event Routes", () => {
 
 			const response = await request(app).post("/api/event/create").send({
 				event_name: "Tech Conference",
-				event_type: 1,
 				tags: "Technology, Networking",
 				web_link: "https://techconference.com",
 				start_time: "2024-12-20T10:00:00.000Z",
@@ -55,7 +65,6 @@ describe("Event Routes", () => {
 
 			const response = await request(app).post("/api/event/create").send({
 				event_name: "Tech Conference",
-				event_type: 1,
 				start_time: "2024-12-20T10:00:00.000Z",
 				location: "Tech Hall",
 			});
@@ -198,4 +207,54 @@ describe("Event Routes", () => {
 			expect(response.body.message).toBe("Server error");
 		});
 	});
+
+	// Test: Handle RSVP
+// Test: Handle RSVP
+describe("POST /api/event/rsvp", () => {
+    test("Successfully processes RSVP", async () => {
+      db.query.mockResolvedValueOnce({
+        rows: [{ did_rsvp: false }],
+      }).mockResolvedValueOnce({
+        rows: [{ event_id: 1 }],
+      });
+
+      const response = await request(app).post("/api/event/rsvp").send({
+        user_id: 1,
+        event_id: 1,
+        did_rsvp: true
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe("RSVP processed successfully.");
+    });
+  });
+
+  // Test: Search Events
+  describe("GET /api/event/search", () => {
+    test("Successfully searches events by query and tags", async () => {
+      // Mock database response
+      db.query.mockResolvedValueOnce({
+        rows: [
+          { event_name: "Tech Conference", tags: "Technology, Networking" },
+          { event_name: "Art Exhibition", tags: "Art, Culture" },
+        ],
+      });
+
+      console.log("Mock Response:", db.query.mock.calls);
+
+      // Send the request with query parameters
+      const response = await request(app).get("/api/event/search").query({
+        query: "Tech",         // Search for "Tech"
+        tags: "Technology"    // Filter by tag "Technology"
+      });
+
+      console.log("Response Body:", JSON.stringify(response.body, null, 2));
+
+      // Check the response
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveLength(1); // Only 1 event matches the search
+      expect(response.body[0].event_name).toBe("Tech Conference"); // Verify the event name
+    });
+  });
 });
+  

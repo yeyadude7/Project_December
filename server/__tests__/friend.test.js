@@ -216,4 +216,92 @@ describe("Friend Routes", () => {
 			expect(response.body.message).toBe("Server error");
 		});
 	});
+
+	describe("GET /api/friends/Aisearch", () => {
+		test("Successfully searches for friends or users", async () => {
+		  db.query.mockResolvedValueOnce({
+			rows: [
+			  { id: 1, name: "John Doe", email: "john@example.com" },
+			  { id: 2, name: "Jane Doe", email: "jane@example.com" },
+			],
+		  });
+	
+		  const response = await request(app)
+			.get("/api/friends/Aisearch")
+			.query({ query: "Doe", user_id: 1 });
+	
+		  expect(response.statusCode).toBe(200);
+		  expect(response.body).toHaveLength(2);
+		  expect(response.body[0].name).toBe("John Doe");
+		});
+	
+		test("Fails when user_id is missing", async () => {
+		  const response = await request(app)
+			.get("/api/friends/Aisearch")
+			.query({ query: "Doe" });
+	
+		  expect(response.statusCode).toBe(400); // HandleBadRequestError
+		  expect(response.body.message).toBe("user_id is required.");
+		});
+	
+		test("Handles server error during search", async () => {
+		  db.query.mockRejectedValueOnce(new Error("Database error"));
+	
+		  const response = await request(app)
+			.get("/api/friends/Aisearch")
+			.query({ query: "Doe", user_id: 1 });
+	
+		  expect(response.statusCode).toBe(500); // HandleServerError
+		  expect(response.body.message).toBe("Server error");
+		});
+	  });
+	
+	  // Test: Search Users (search route)
+	  describe("GET /api/friends/search", () => {
+		test("Successfully searches for users by name or email", async () => {
+		  db.query.mockResolvedValueOnce({
+			rows: [
+			  { id: 1, name: "John Doe", email: "john@example.com" },
+			  { id: 2, name: "Jane Doe", email: "jane@example.com" },
+			],
+		  });
+	
+		  const response = await request(app)
+			.get("/api/friends/search")
+			.query({ query: "Doe", user_id: 1 });
+	
+		  expect(response.statusCode).toBe(200);
+		  expect(response.body).toHaveLength(2);
+		  expect(response.body[0].name).toBe("John Doe");
+		});
+	
+		test("Fails when query is missing", async () => {
+		  const response = await request(app)
+			.get("/api/friends/search")
+			.query({ user_id: 1 });
+	
+		  expect(response.statusCode).toBe(400); // HandleBadRequestError
+		  expect(response.body.message).toBe("Search query is required.");
+		});
+	
+		test("Fails when user_id is missing", async () => {
+		  const response = await request(app)
+			.get("/api/friends/search")
+			.query({ query: "Doe" });
+	
+		  expect(response.statusCode).toBe(400); // HandleBadRequestError
+		  expect(response.body.message).toBe("user_id is required.");
+		});
+	
+		test("Handles server error during search", async () => {
+		  db.query.mockRejectedValueOnce(new Error("Database error"));
+	
+		  const response = await request(app)
+			.get("/api/friends/search")
+			.query({ query: "Doe", user_id: 1 });
+	
+		  expect(response.statusCode).toBe(500); // HandleServerError
+		  expect(response.body.message).toBe("Server error");
+		});
+	  });
 });

@@ -123,6 +123,110 @@ router.get("/requests", async (req, res) => {
 	}
 });
 
+router.get("/search", async (req, res) => {
+	const { query, user_id } = req.query;
+
+	if (!query) {
+		return handleBadRequestError(res, "Search query is required.");
+	}
+
+	if (!user_id) {
+		return handleBadRequestError(res, "user_id is required.");
+	}
+
+	try {
+		// Search for users by name or email excluding the current user
+		const searchResults = await pool.query(
+			`SELECT *
+             FROM users 
+             WHERE (name ILIKE $1 OR email ILIKE $1) AND id != $2`,
+			[`%${query}%`, user_id]
+		);
+
+		// Return search results
+		res.status(200).json(searchResults.rows);
+	} catch (err) {
+		handleServerError(res, err);
+	}
+});
+
+
+// Search Friends or Users
+router.get("/Aisearch", async (req, res) => {
+    const { query, user_id, friendship_status, namestartswith, order, major, type_of_student, year } = req.query;
+
+    console.log("Received query parameters:", req.query);
+
+    if (!user_id) {
+        return handleBadRequestError(res, "user_id is required.");
+    }
+
+    try {
+        let searchResults;
+
+        // Dynamically construct the search condition based on namestartswith
+        let searchCondition = "";
+        if (namestartswith === "yes") {
+            searchCondition = `users.name ILIKE $2 || '%'`; // Search for names starting with the query
+        } else {
+            searchCondition = `(users.name ILIKE $2 OR users.email ILIKE $2)`; // Default behavior
+        }
+
+        // Dynamically add conditions for major, type_of_student, and year if they are provided
+        let additionalConditions = [];
+
+        // Add conditions for major, type_of_student, and year if provided
+        if (major) {
+            additionalConditions.push(`users.major ILIKE '%${major}%'`);
+        }
+
+        if (type_of_student) {
+            additionalConditions.push(`users.type_of_student ILIKE '%${type_of_student}%'`);
+        }
+
+        if (year) {
+            additionalConditions.push(`users.year ILIKE '%${year}%'`);
+        }
+
+        // Combine all conditions
+        let whereClause = `AND ($2 = '' OR ${searchCondition})`;
+
+        if (additionalConditions.length > 0) {
+            whereClause += ` AND ${additionalConditions.join(' AND ')}`;
+        }
+
+		if(!friendship_status){
+			searchResults = await pool.query(
+			`SELECT users.* 
+            FROM users
+			WHERE users.id != $1 
+			${whereClause}`,
+			[user_id, `${query}`]
+			);
+		}
+		else{
+        // Query with dynamic conditions
+        searchResults = await pool.query(
+            `SELECT users.*
+			FROM friendship_status
+			JOIN users
+            ON (users.id = friendship_status.user1_id AND friendship_status.user2_id = $1)
+        		OR (users.id = friendship_status.user2_id AND friendship_status.user1_id = $1)
+			WHERE friendship_status.status = $3
+			AND users.id != $1 
+            ${whereClause}
+            ORDER BY friendship_status.created_at ${order};`,
+            [user_id, `${query}`, friendship_status]
+        );
+		}
+
+        res.status(200).json(searchResults.rows);
+    } catch (err) {
+        handleServerError(res, err);
+    }
+});
+
+
 // List Friends
 router.get("/", async (req, res) => {
 	const { user_id } = req.query;
