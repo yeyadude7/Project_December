@@ -47,6 +47,7 @@ const setupDatabase = async () => {
             CREATE TABLE events (
                 event_id SERIAL PRIMARY KEY,
                 event_name VARCHAR(255) NOT NULL,
+                event_type INTEGER NOT NULL,
                 tags VARCHAR(255),
                 web_link TEXT,
                 start_time TIMESTAMP NOT NULL,

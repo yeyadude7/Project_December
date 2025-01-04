@@ -11,6 +11,7 @@ const {
 router.post("/create", async (req, res) => {
 	const {
 		event_name,
+		event_type,
 		tags,
 		web_link,
 		start_time,
@@ -24,18 +25,19 @@ router.post("/create", async (req, res) => {
 		user_id,
 	} = req.body;
 
-	if (!event_name || !start_time || !location) {
+	if (!event_name || !event_type || !start_time || !location) {
 		return handleBadRequestError(res, "Missing required fields.");
 	}
 
 	try {
 		const newEvent = await pool.query(
 			`INSERT INTO events 
-            (event_name, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+            (event_name, event_type, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
             RETURNING *`,
 			[
 				event_name,
+				event_type,
 				tags,
 				web_link,
 				start_time,
@@ -111,6 +113,7 @@ router.put("/update/:id", async (req, res) => {
 	const { id } = req.params;
 	const {
 		event_name,
+		event_type,
 		tags,
 		web_link,
 		start_time,
@@ -129,6 +132,7 @@ router.put("/update/:id", async (req, res) => {
 			`UPDATE events 
              SET 
                  event_name = COALESCE($1, event_name),
+				 event_type = COALESCE($2, event_type),
                  tags = COALESCE($3, tags),
                  web_link = COALESCE($4, web_link),
                  start_time = COALESCE($5, start_time),
@@ -145,6 +149,7 @@ router.put("/update/:id", async (req, res) => {
              RETURNING *`,
 			[
 				event_name,
+				event_type,
 				tags,
 				web_link,
 				start_time,
