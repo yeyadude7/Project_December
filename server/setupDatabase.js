@@ -5,6 +5,8 @@ const setupDatabase = async () => {
 		console.log("Setting up database...");
 
 		// Drop existing tables
+        await pool.query(`DROP TABLE IF EXISTS classes CASCADE`);
+        await pool.query(`DROP TABLE IF EXISTS catalogue_classes CASCADE`);
 		await pool.query(`DROP TABLE IF EXISTS user_interests CASCADE`);
 		await pool.query(`DROP TABLE IF EXISTS interests CASCADE`);
 		await pool.query(`DROP TABLE IF EXISTS events CASCADE`);
@@ -57,6 +59,27 @@ const setupDatabase = async () => {
                 source_url TEXT UNIQUE,
                 user_id INTEGER REFERENCES users(id),
                 no_of_attendees INTEGER NOT NULL DEFAULT 0
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE catalogue_classes (
+                class_id SERIAL PRIMARY KEY,
+                class_name VARCHAR(255) NOT NULL,
+                description TEXT,
+                department VARCHAR(255),
+                credits INTEGER
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE classes (
+                class_id INTEGER REFERENCES catalogue_classes(class_id),
+                user_id INTEGER REFERENCES users(id),
+                day_of_week VARCHAR(255) NOT NULL,
+                start_time TIME NOT NULL,
+                end_time TIME NOT NULL,
+                location VARCHAR(255),
+                PRIMARY KEY (class_id, user_id, day_of_week, start_time)
             );
         `);
 
