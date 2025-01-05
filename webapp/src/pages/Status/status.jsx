@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import "./status.css";
 import { SocialIcon } from "react-social-icons";
+import { Switch } from "@material-tailwind/react";
 import StickyNavbar from "../../components/StickyNavbar/stickyNavbar.jsx";
 import bannerImage from "../../images/temp_banner_image.jpg";
 import christmasImage from "../../images/christmas_image.jpg";
@@ -10,108 +12,92 @@ import concertImage from "../../images/concert_image.jpg";
 import profileImage from "../../images/profile_image.jpg";
 
 const Status = () => {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <>
-      <div className="grid grid-cols-1 justify-items-center">
-        {/* Header element */}
-
-        {/* <div className="bg-gray-200 h-20">
-          <img src = {bannerImage} className="object-fill"></img>
-        </div> */}
-
-        <div className="pr-72 pt-4">
-          <div className="border-4 border-gray-600 ml-4 bg-gray-200 object-none w-28 h-28 rounded-full custom-position">
-            <img
-              src={profileImage}
-              className="object-fill rounded-full"
-            ></img>
+      <div className="grid grid-cols-1 justify-items-center mb-20">
+        {/* Profile Icon */}
+        <div className="pt-4">
+          <div className="border-4 border-gray-600 bg-gray-200 object-none w-48 h-48 rounded-full custom-position">
+            <img src={profileImage} className="object-fill rounded-full"></img>
           </div>
         </div>
 
-        {/* Name */}
-        <div className="py-4 justify-center items-center">
-          <div className="gap-8 columns-2">
-            <h1 className="text-3xl font-bold">Joseph Popa</h1>
-            <Link to="/aboutme">
-              <button className="more_tag right-0">Edit</button>
-            </Link>
-            <Link to="/aboutme" className="pl-2">
-              <button className="status_tag">My Status</button>
-            </Link>
-          </div>
-          {/* Profile description */}
-          <div>
-            <p>Hey there! I'm looking to make new friends!</p>
+        <div className="where_tag mb-4 border-2 border-gray-600">
+          <p>Where to?</p>
+        </div>
+
+        {/* Tonight */}
+        <div class="pt-1 bg-gray-100 w-[400px] h-20 rounded rounded-3xl overflow-hidden shadow-lg">
+          <div class="columns-2 px-10 py-6">
+            <p>going out tonight?</p>
+
+            <label class="pl-20 pt-0.5 inline-flex items-center me-5 cursor-pointer">
+              <input type="checkbox" value="" class="sr-only peer" onChange={handleCheckboxChange} checked={isChecked} />
+              <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+            </label>
           </div>
         </div>
 
-        {/* Cards */}
-
-        <div className="grid grid-cols-2 gap-4 justify-center items-center">
-          <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-            <div class="px-6 py-4">
-              {/* <div class="font-bold text-xl mb-2">Card 2</div> */}
-              <SocialIcon url="www.linkedin.com"></SocialIcon>
-              <p class="pt-2 text-gray-700 text-base">Linkedin</p>
-              <p class="text-gray-700 text-xs">Let's connect!</p>
-            </div>
-          </div>
-
-          <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-            <div class="px-6 py-4">
-              <div class="font-light text-xl">Hey!</div>
-              <div class="font-light text-xl mb-2">Welcome</div>
-
-              {/* <p class="text-gray-700 text-base"></p> */}
-            </div>
-          </div>
-        </div>
-
-        {/* Upcoming events */}
-        <div className="pt-8 pr-40">
+        {/* Community Status */}
+        <div className="pt-8 pb-2 pr-40">
           <div className="pr-6">
-            <h1 className="text-3xl font-light">Upcoming Events</h1>
+            <h1 className="text-xl font-bold">Your Community Status</h1>
           </div>
         </div>
 
-        {/* Cards */}
-
-        <div className="pt-4 justify-center items-center">
-          <div>
-            <p className="pb-2 font-semibold">
-              Let's connect at one of these events!
-            </p>
-          </div>
-          <div className="columns-2">
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={concertImage} className="object-fill"></img>
+        <div className="w-[400px] h-20 bg-blue-100 rounded rounded-xl overflow-hidden shadow-lg">
+          <div className="px-4 pt-3">
+            <div className="columns-2 pb-2">
+              <p className="font-semibold">Connection Score</p>
+              <p className="pl-36 text-blue-500 font-semibold">92%</p>
             </div>
-
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={partyImage} className="object-fill"></img>
+            <div class="w-full bg-blue-200 rounded-full h-2.5 dark:bg-gray-700">
+              <div class="bg-blue-500 h-2.5 rounded-full w-8"></div>
             </div>
           </div>
         </div>
 
         {/* Cards */}
-
         <div className="pt-4 justify-center items-center">
-          <div>
-            <p className="pb-2 font-semibold">
-            Concert videos/pictures/fun!
-            </p>
-          </div>
           <div className="columns-2">
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={christmasImage} className="object-fill"></img>
+            <div class="w-48 h-24 pt-4 rounded-lg overflow-hidden shadow-lg grid justify-items-center">
+              <h1 className="font-bold text-2xl">24</h1>
+              <p className="pb-4">Connections</p>
             </div>
 
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={seminarImage} className="object-fill"></img>
+            <div class="w-48 h-24 pt-4 rounded-lg overflow-hidden shadow-lg grid justify-items-center">
+              <h1 className="font-bold text-2xl">8</h1>
+              <p className="pb-4">Study Sessions</p>
             </div>
           </div>
         </div>
 
+        {/* Recent Achievements */}
+        <div className="pt-8 pb-2 pr-40">
+          <div className="pr-6">
+            <h1 className="text-xl font-bold">Recent Achievements</h1>
+          </div>
+        </div>
+
+        <div class="w-[400px] h-30 rounded rounded-xl overflow-hidden shadow-lg">
+          <div class="px-10 py-6">
+            <div className="bg-yellow-200 text-yellow-700 rounded-3xl pl-3 mr-40 mb-2">
+              🏆 Top Connector
+            </div>
+            <div className="bg-blue-200 text-blue-700 rounded-3xl pl-3 mr-40 mb-2">
+              📚 Study Champion
+            </div>
+            <div className="bg-green-200 text-green-700 rounded-3xl pl-3 mr-40 mb-2">
+              💪 Gym Regular
+            </div>
+          </div>
+        </div>
       </div>
       <StickyNavbar />
     </>

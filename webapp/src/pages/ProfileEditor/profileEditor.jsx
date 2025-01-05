@@ -75,7 +75,7 @@ const ProfileEditor = ({ onBack, onSave }) => {
   };
 
   return (
-    <div className="flex relative items-center justify-center bg-white">
+    <div className="grid grid-cols-1 justify-items-center">
       
 
       <form
