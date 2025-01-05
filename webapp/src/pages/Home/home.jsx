@@ -9,7 +9,7 @@ import seminarImage from "../../images/seminar_image.jpg";
 import concertImage from "../../images/concert_image.jpg";
 import profileImage from "../../images/profile_image.jpg";
 
-const Profile = () => {
+const Home = () => {
   return (
     <>
       <div className="grid grid-cols-1 justify-items-center">
@@ -133,4 +133,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Home;

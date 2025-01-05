@@ -21,6 +21,11 @@ const Status = () => {
   return (
     <>
       <div className="grid grid-cols-1 justify-items-center mb-20">
+        <div className="mt-2 pr-[280px]">
+          <Link to="/mainprofile">
+            <p className="text-sm text-blue-500"> ← Back to profile</p>
+          </Link>
+        </div>
         {/* Profile Icon */}
         <div className="pt-4">
           <div className="border-4 border-gray-600 bg-gray-200 object-none w-48 h-48 rounded-full custom-position">
@@ -38,7 +43,13 @@ const Status = () => {
             <p>going out tonight?</p>
 
             <label class="pl-20 pt-0.5 inline-flex items-center me-5 cursor-pointer">
-              <input type="checkbox" value="" class="sr-only peer" onChange={handleCheckboxChange} checked={isChecked} />
+              <input
+                type="checkbox"
+                value=""
+                class="sr-only peer"
+                onChange={handleCheckboxChange}
+                checked={isChecked}
+              />
               <div class="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
             </label>
           </div>

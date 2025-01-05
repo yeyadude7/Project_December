@@ -35,7 +35,7 @@
 }
 
 .event-card {
-  background-color: #1f2937;
+  background-color: white;
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -47,19 +47,19 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #9ca3af;
+  color: black;
   margin-bottom: 0.75rem;
 }
 
 .event-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: black;
   margin-bottom: 0.75rem;
 }
 
 .event-description {
-  color: #d1d5db;
+  color: black;
   font-size: 0.875rem;
   margin-bottom: 1rem;
 }
@@ -80,7 +80,7 @@
 }
 
 .tag {
-  background-color: #374151;
+  background-color: lightskyblue;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -103,7 +103,7 @@
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   font-size: 0.875rem;
-  background-color: #374151;
+  background-color: lightskyblue;
   color: white;
   border: none;
   cursor: pointer;
@@ -117,7 +117,7 @@
 .reaction-button {
   padding: 0.5rem;
   border-radius: 9999px;
-  background-color: #374151;
+  background-color: lightskyblue;
   color: white;
   border: none;
   cursor: pointer;

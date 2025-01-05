@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, X, School, Clock, Heart, Users } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import "./friends.css";
 import StickyNavbar from "../../components/StickyNavbar/stickyNavbar.jsx";
-import Tag from "../../components/Tag/tag.jsx";
+import ProfileCard from "../../components/ProfileCard/profileCard.jsx";
 
 const Friends = () => {
   const [friends, setFriends] = useState(() => {
@@ -12,6 +12,7 @@ const Friends = () => {
         name: "Alex Thompson",
         compatability: 95,
         major: "Computer Science",
+        bannerColor: "1da1f2",
         graduationYear: 2025,
         profilePicture: "",
         connections: 189,
@@ -23,6 +24,7 @@ const Friends = () => {
         name: "Maria Rodriguez",
         compatability: 88,
         major: "Computer Science",
+        bannerColor: "ee73c1",
         graduationYear: 2024,
         profilePicture: "",
         connections: 256,
@@ -34,6 +36,7 @@ const Friends = () => {
         name: "John Doe",
         compatability: 71,
         major: "Mathematics",
+        bannerColor: "83d764",
         graduationYear: 2025,
         profilePicture: "",
         connections: 314,
@@ -79,7 +82,7 @@ const Friends = () => {
               </button>
             </Link>
           </div>
-          <h1 className="font-bold text-2xl text-center pb-4">Connect</h1>
+          <h1 className="font-bold text-3xl text-center pb-4">Connect</h1>
 
           {/* Search Bar */}
           <div className="relative flex items-center justify-center w-fit place-self-center">
@@ -127,7 +130,7 @@ const Friends = () => {
           </div>
 
           {/* Profile Cards */}
-          <div className="flex items-center justify-center flex-col">
+          <div className="flex items-center justify-center flex-col gap-8">
             {query.length === 0
               ? friends.map((element, key) => {
                   return (
@@ -136,6 +139,7 @@ const Friends = () => {
                       name={element.name}
                       major={element.major}
                       graduationYear={element.graduationYear}
+                      bannerColor={element.bannerColor}
                       profilePicture={element.profilePicture}
                       connections={element.connections}
                       classes={element.classes}
@@ -169,34 +173,5 @@ const Friends = () => {
   );
 };
 
-// Profile card for users in friends page
-function ProfileCard(props) {
-  return (
-    <div className="rounded-3xl overflow-hidden border-1 bg-white shadow-md w-fit relative">
-      <div className="w-full">
-        <div className="absolute right-2 top-2 flex gap-2">
-          <Tag text={props.compatability + "%"} color="blue" />
-          {props.leader === true ? <Tag text="Leader" color="yellow" /> : null}
-        </div>
-      </div>
-      <img className="w-full h-32" href={props.profilePicture}></img>
-      <div className="px-3 py-3">
-        <div className="flex items-center justify-between gap-10">
-          <p className="font-bold text-xl text-zinc-800">{props.name}</p>
-          <Tag text={props.connections + " connections"} />
-        </div>
-        <p className="text-zinc-500">
-          {props.major} '{props.graduationYear}
-        </p>
-        <p className="text-zinc-500 font-medium my-3">{props.classes}</p>
-        <div className="flex gap-2">
-          {props.interests.map((element, key) => {
-            return <Tag text={element} key={key} />;
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default Friends;

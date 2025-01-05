@@ -6,6 +6,7 @@
 		"setup-db": "node setupDatabase.js",
 		"seed-db": "node populateDummyData.js",
 		"reset-db": "npm run setup-db && npm run seed-db",
+		"live-db": "node populateLiveData.js",
 		"test": "jest",
 		"test:core": "jest --testPathIgnorePatterns=__tests__/db/",
 		"test:file": "jest"
@@ -15,9 +16,14 @@
 	"description": "",
 	"dependencies": {
 		"bcrypt": "^5.1.1",
+		"cheerio": "^1.0.0",
 		"cors": "^2.8.5",
+		"csv-parser": "^3.1.0",
+		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
+		"node-fetch": "^3.3.2",
+		"jsonwebtoken": "^9.0.2",
 		"pg": "^8.13.1"
 	},
 	"devDependencies": {

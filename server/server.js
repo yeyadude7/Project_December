@@ -15,6 +15,8 @@ app.use("/api/user", require("./routes/user"));
 app.use("/api/event", require("./routes/event"));
 app.use("/api/interest", require("./routes/interest"));
 app.use("/api/friend", require("./routes/friend"));
+app.use("/api/login", require("./routes/login"));
+app.use("/api/signup", require("./routes/signup"));
 
 // Server listening Result
 app.listen(PORT, () => {
