@@ -12,11 +12,12 @@ const Friends = () => {
         name: "Alex Thompson",
         compatability: 95,
         major: "Computer Science",
+        userID: "1",
         bannerColor: "1da1f2",
         graduationYear: 2025,
         profilePicture: "",
         connections: 189,
-        classes: "CS246, CS224",
+        classes: ["CS246", "CS224"],
         interests: ["ML/AI", "Fitness"],
         leader: true,
       },
@@ -24,12 +25,13 @@ const Friends = () => {
         name: "Maria Rodriguez",
         compatability: 88,
         major: "Computer Science",
+        userID: "2",
         bannerColor: "ee73c1",
         graduationYear: 2024,
         profilePicture: "",
         connections: 256,
-        classes: "CS246, CS229",
-        interests: ["Algorithms", "Basketball"],
+        classes: ["CS246", "CS229"],
+        interests: ["Algorithms", "Basketball", "Chess"],
         leader: true,
       },
       {
@@ -37,25 +39,49 @@ const Friends = () => {
         compatability: 71,
         major: "Mathematics",
         bannerColor: "83d764",
+        userID: "3",
         graduationYear: 2025,
         profilePicture: "",
         connections: 314,
-        classes: "MAC2311, MAC4211",
+        classes: ["MAC2311", "MAC4211"],
         interests: ["Chess", "Puzzles"],
-        leader: true,
+        leader: false,
       },
     ];
   });
 
+  const searchFilters = ["name", "major", "classes", "interests"];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("name");
   const [query, setQuery] = useState([]);
+  const [onlyLeaders, setOnlyLeaders] = useState(false);
 
   const filteredFriends = friends.filter((item) => {
-    console.log(searchBy);
+    if (onlyLeaders && !item["leader"]) {
+      return false;
+    }
 
-    // Only name and major are fully functional
-    // Will need to add more logic for other cases
+    // Check if the search by type is undefined
+    if (item[searchBy] === undefined)
+      return false;
+
+    // Check if the search by type is an array
+    if (Array.isArray(item[searchBy])) {
+      let match = false;
+
+      // Check for match with each element in the array
+      item[searchBy].map((element) => {
+        if (element.toLowerCase().includes(searchTerm.toLowerCase())) {
+          match = true;
+        }
+      });
+
+      // If there is a match, return the item
+      return match;
+    }
+
+    // Check for match with the search term based on the search by type
     const searchValue = item[searchBy].toLowerCase();
     return searchValue.includes(searchTerm.toLowerCase());
   });
@@ -67,25 +93,36 @@ const Friends = () => {
 
   const handleModifySearch = (modifier) => {
     setSearchBy(modifier);
-    console.log(searchBy);
   }
+
+  const handleToggleLeaders = () => {
+    setOnlyLeaders((prevOnlyLeaders) => !prevOnlyLeaders);
+  }
+
   return (
-    <div>
-      <div className="flex flex-col relative items-center justify-center bg-white mb-20">
+    <div className="flex flex-col items-center w-svw">
+      {/* Header */}
+      <div className="absolute left-4 flex items-center justify-between mt-4 mb-6">
+        <Link to="/mainprofile">
+          <button className="text-blue-500 flex items-center gap-1 text-sm hover:text-blue-600 transition-colors">
+            <ArrowLeft size={16} /> Back to Profile
+          </button>
+        </Link>
+      </div>
+      <div className="flex flex-col relative items-center justify-center mt-16 mb-28 w-full max-w-lg px-4">
         {/* Sections */}
-        <div className="flex flex-col w-full">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <Link to="/mainprofile">
-              <button className="text-blue-500 flex items-center gap-1 text-sm hover:text-blue-600 transition-colors">
-                <ArrowLeft size={16} /> Back to Profile
-              </button>
-            </Link>
-          </div>
-          <h1 className="font-bold text-3xl text-center pb-4">Connect</h1>
+        <div className="flex flex-col w-full">          
+          <h1 className="font-bold text-4xl text-center mb-8">Connect</h1>
 
           {/* Search Bar */}
-          <div className="relative flex items-center justify-center w-fit place-self-center">
+          <form className="grid grid-cols-[80%_20%] relative m-auto w-full place-self-center" onSubmit={handleSearch}>
+            <input
+              className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+              placeholder="Find study & gym partners..."
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -98,34 +135,27 @@ const Friends = () => {
                 clipRule="evenodd"
               />
             </svg>
-
-            <form onSubmit={handleSearch}>
-              <input
-                className="w-64 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                placeholder="Find study & gym partners..."
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <button
-                className="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-                type="button"
-                onClick={handleSearch}
-              >
-                Search
-              </button>
-            </form>
-          </div>
+            <button
+              className="rounded-md bg-slate-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+              type="button"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </form>
 
           {/* Options */}
-          <div className="flex items-center justify-center flex-col pb-4">
-            <div className="">
-              <button onClick={() => handleModifySearch("name")} className="friend_search_tag border-2 hover:bg-sky-300 focus:bg-sky-200">Name</button>
-              <button onClick={() => handleModifySearch("major")} className="friend_search_tag border-2">Major</button>
-              <button onClick={() => handleModifySearch("classes")} className="friend_search_tag border-2">Courses</button>
-              <button onClick={() => handleModifySearch("interests")} className="friend_search_tag border-2">Interests</button>
-              <button onClick={() => handleModifySearch("major")} className="friend_search_tag border-2">Leader</button>
+          <div className="w-full">
+            <div className="flex items-center justify-center gap-2 mt-2">
+                {/* Dynamically create search filter buttons */}
+                {searchFilters.map((tag, index) => {
+                  return (
+                    <button key={index} onClick={() => handleModifySearch(tag)} className={"friend_search_tag border-1 border-color-slate-300 hover:bg-sky-200 transition-all " + (searchBy === tag ? "bg-sky-300" : "")}>{tag.charAt(0).toUpperCase() + tag.slice(1)}</button>
+                  );
+                })}
+            </div>
+            <div className="flex items-center justify-center mt-2 mb-8">
+              <button onClick={() => handleToggleLeaders()} className={"friend_search_tag border-1 border-color-slate-300 hover:bg-sky-200 transition-all " + (onlyLeaders ? "bg-sky-300" : "")}>🏆 Only Show Leaders</button>
             </div>
           </div>
 
@@ -138,6 +168,7 @@ const Friends = () => {
                       compatability={element.compatability}
                       name={element.name}
                       major={element.major}
+                      userID={element.userID}
                       graduationYear={element.graduationYear}
                       bannerColor={element.bannerColor}
                       profilePicture={element.profilePicture}
@@ -155,6 +186,8 @@ const Friends = () => {
                       compatability={element.compatability}
                       name={element.name}
                       major={element.major}
+                      userID={element.userID}
+                      bannerColor={element.bannerColor}
                       graduationYear={element.graduationYear}
                       profilePicture={element.profilePicture}
                       connections={element.connections}
