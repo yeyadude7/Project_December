@@ -6,7 +6,7 @@ import Events from "./pages/Events/events";
 import ProfileEditor from "./pages/ProfileEditor/profileEditor";
 import Profile from "./pages/Profile/profile";
 import AboutMe from "./pages/AboutMe/aboutme";
-import Friends from "./pages/Friends/friends";
+import Connect from "./pages/Connect/connect";
 import SignUp from "./pages/Signup/signup";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/home";
@@ -21,7 +21,7 @@ function App() {
         <Route path = "/signup" element = {<SignUp/>}/>
         <Route path = "/editprofile" element = {<ProfileEditor/>}/>
         <Route path = "/events" element = {<Events/>}/>
-        <Route path = "/friends" element = {<Friends/>}/>
+        <Route path = "/connect" element = {<Connect/>}/>
         <Route path = "/aboutme" element = {<AboutMe/>}/>
         <Route path = "/status" element = {<Status/>}/>
         <Route path = "/mainprofile" element = {<Profile/>}/>
