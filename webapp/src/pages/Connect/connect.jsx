@@ -1,54 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import "./friends.css";
+import "./connect.css";
 import StickyNavbar from "../../components/StickyNavbar/stickyNavbar.jsx";
 import ProfileCard from "../../components/ProfileCard/profileCard.jsx";
+import Config from "../../config.js";
 
-const Friends = () => {
-  const [friends, setFriends] = useState(() => {
-    return [
-      {
-        name: "Alex Thompson",
-        compatability: 95,
-        major: "Computer Science",
-        userID: "1",
-        bannerColor: "1da1f2",
-        graduationYear: 2025,
-        profilePicture: "",
-        connections: 189,
-        classes: ["CS246", "CS224"],
-        interests: ["ML/AI", "Fitness"],
-        leader: true,
-      },
-      {
-        name: "Maria Rodriguez",
-        compatability: 88,
-        major: "Computer Science",
-        userID: "2",
-        bannerColor: "ee73c1",
-        graduationYear: 2024,
-        profilePicture: "",
-        connections: 256,
-        classes: ["CS246", "CS229"],
-        interests: ["Algorithms", "Basketball", "Chess"],
-        leader: true,
-      },
-      {
-        name: "John Doe",
-        compatability: 71,
-        major: "Mathematics",
-        bannerColor: "83d764",
-        userID: "3",
-        graduationYear: 2025,
-        profilePicture: "",
-        connections: 314,
-        classes: ["MAC2311", "MAC4211"],
-        interests: ["Chess", "Puzzles"],
-        leader: false,
-      },
-    ];
-  });
+const Connect = () => {
+  const [users, setUsers] = useState(null);
+
+  useEffect(() => {
+    const fetchFromURL = async () => {
+      const request = await fetch(`${window.location.protocol}//${window.location.hostname}:${Config.SERVER_PORT}/api/user/all`);
+      const response = await request.json();
+      
+      setUsers(response);
+    };
+
+    fetchFromURL();
+  }, []);
 
   const searchFilters = ["name", "major", "classes", "interests"];
 
@@ -57,7 +27,7 @@ const Friends = () => {
   const [query, setQuery] = useState([]);
   const [onlyLeaders, setOnlyLeaders] = useState(false);
 
-  const filteredFriends = friends.filter((item) => {
+  const getFilteredUsers = () => users.filter((item) => {
     if (onlyLeaders && !item["leader"]) {
       return false;
     }
@@ -75,6 +45,8 @@ const Friends = () => {
         if (element.toLowerCase().includes(searchTerm.toLowerCase())) {
           match = true;
         }
+
+        return element;
       });
 
       // If there is a match, return the item
@@ -88,7 +60,7 @@ const Friends = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setQuery(filteredFriends);
+    setQuery(getFilteredUsers());
   };
 
   const handleModifySearch = (modifier) => {
@@ -100,6 +72,7 @@ const Friends = () => {
   }
 
   return (
+    users === null ? <div /> :
     <div className="flex flex-col items-center w-svw">
       {/* Header */}
       <div className="absolute left-4 flex items-center justify-between mt-4 mb-6">
@@ -162,15 +135,15 @@ const Friends = () => {
           {/* Profile Cards */}
           <div className="flex items-center justify-center flex-col gap-8">
             {query.length === 0
-              ? friends.map((element, key) => {
+              ? users?.map((element, key) => {
                   return (
                     <ProfileCard
                       compatability={element.compatability}
                       name={element.name}
                       major={element.major}
-                      userID={element.userID}
-                      graduationYear={element.graduationYear}
-                      bannerColor={element.bannerColor}
+                      userID={element.id}
+                      year={element.year}
+                      bannerImage={element.photo}
                       profilePicture={element.profilePicture}
                       connections={element.connections}
                       classes={element.classes}
@@ -186,9 +159,9 @@ const Friends = () => {
                       compatability={element.compatability}
                       name={element.name}
                       major={element.major}
-                      userID={element.userID}
-                      bannerColor={element.bannerColor}
-                      graduationYear={element.graduationYear}
+                      userID={element.id}
+                      year={element.year}
+                      bannerImage={element.photo}
                       profilePicture={element.profilePicture}
                       connections={element.connections}
                       classes={element.classes}
@@ -207,4 +180,4 @@ const Friends = () => {
 };
 
 
-export default Friends;
+export default Connect;

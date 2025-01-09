@@ -14,6 +14,7 @@ function Tag(props) {
     };  
 
     return (
+        props.placeholder ? <p className="rounded-xl w-[64px] h-[20px] bg-zinc-200 animate-pulse"></p> :
         <p className={getColors() + " text-sm px-2 rounded-xl w-fit"}>{props.text}</p>
     );
 }

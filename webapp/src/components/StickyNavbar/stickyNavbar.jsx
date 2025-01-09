@@ -9,7 +9,7 @@ function StickyNavbar() {
                 <div className="flex justify-center items-center">
                     <button className="pb-1 bg-highlight h-12 w-12 text-3xl rounded-full text-white hover:brightness-150 transition-all">+</button>
                 </div>
-                <NavbarButton text="Friends" href="friends"/>
+                <NavbarButton text="Connect" href="connect"/>
                 <NavbarButton text="Profile" href="mainprofile" />
             </div>
         </div>
