@@ -4,6 +4,7 @@ const pool = require("../db");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Nodemailer = require("nodemailer");
+const { forgotPasswordEmail } = require("../mailtrap/emails");
 
 router.post("/request-reset", async (req, res) => {
   const { email } = req.body;
@@ -24,18 +25,8 @@ router.post("/request-reset", async (req, res) => {
     const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
     // Send email with reset link
-    const transporter = Nodemailer.createTransport(
-      MailtrapTransport({
-        token: process.env.MAILTRAP_TOKEN
-      })
-    );
 
-    const resetLink = `http://yourdomain.com/reset-password?token=${resetToken}`;
-    await transporter.sendMail({
-      to: email,
-      subject: "Password Reset",
-      text: `Click the link to reset your password: ${resetLink}`,
-    });
+    await forgotPasswordEmail(email, resetToken);
 
     res.status(200).json({ success: true, message: "Password reset email sent" });
   } catch (error) {
