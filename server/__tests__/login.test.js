@@ -9,6 +9,7 @@ jest.mock("../db");
 jest.mock("bcrypt", () => ({
   compare: jest.fn(),
 }));
+
 jest.mock("jsonwebtoken", () => ({
   sign: jest.fn(),
 }));

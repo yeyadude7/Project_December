@@ -24,7 +24,9 @@ const setupDatabase = async () => {
                 photo TEXT,
                 type_of_student VARCHAR(255),
                 year VARCHAR(255),
-                group_preference VARCHAR(255)
+                group_preference VARCHAR(255),
+                is_verified BOOLEAN DEFAULT FALSE,
+                verification_code VARCHAR(6)
             );
         `);
 
@@ -90,5 +92,6 @@ const setupDatabase = async () => {
 		throw err;
 	}
 };
+setupDatabase();
 
 module.exports = setupDatabase;

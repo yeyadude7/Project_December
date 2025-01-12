@@ -39,6 +39,7 @@ describe("AI Search Routes with Real API Calls", () => {
       user_id: 1,
     });
 
+    console.log("AI Search response: ",JSON.stringify(response.body));
     expect(response.statusCode).toBe(400);
     expect(response.body.error).toBe("Invalid search type");
   });

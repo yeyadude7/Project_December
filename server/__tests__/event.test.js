@@ -75,6 +75,8 @@ describe("Event Routes", () => {
 				],
 			});
 
+			console.log("Mock Response for all events:", db.query.mock.calls);
+
 			const response = await request(app).get("/api/event/all");
 
 			expect(response.statusCode).toBe(200);
@@ -173,7 +175,7 @@ describe("Event Routes", () => {
 			db.query.mockResolvedValueOnce({
 				rows: [{ event_id: 1, event_name: "Tech Conference" }],
 			});
-
+			console.log("Mock Response for delete:", db.query.mock.calls);
 			const response = await request(app).delete("/api/event/delete/1");
 
 			expect(response.statusCode).toBe(200);
@@ -198,49 +200,51 @@ describe("Event Routes", () => {
 			expect(response.body.message).toBe("Server error");
 		});
 	});
-});
 
 
-// describe("POST /api/event/rsvp", () => {
-//     test("Successfully processes RSVP", async () => {
-//       db.query.mockResolvedValueOnce({
-//         rows: [{ did_rsvp: false }],
-//       }).mockResolvedValueOnce({
-//         rows: [{ event_id: 1 }],
-//       });
+describe("POST /api/event/rsvp", () => {
+    test("Successfully processes RSVP", async () => {
+      db.query.mockResolvedValueOnce({
+        rows: [{ did_rsvp: false }],
+      }).mockResolvedValueOnce({
+        rows: [{ event_id: 1 }],
+      });
 
-//       const response = await request(app).post("/api/event/rsvp").send({
-//         user_id: 1,
-//         event_id: 1,
-//         did_rsvp: true
-//       });
+	  console.log("Mock Response for rsvp:", db.query.mock.calls);
 
-//       expect(response.statusCode).toBe(200);
-//       expect(response.body.message).toBe("RSVP processed successfully.");
-//     });
-//   });
+      const response = await request(app).post("/api/event/rsvp").send({
+        user_id: 1,
+        event_id: 1,
+        did_rsvp: true
+      });
 
-//   describe("GET /api/event/search", () => {
-//     test("Successfully searches events by query and tags", async () => {
-//       db.query.mockResolvedValueOnce({
-//         rows: [
-//           { event_name: "Tech Conference", tags: "Technology, Networking" },
-//           { event_name: "Art Exhibition", tags: "Art, Culture" },
-//         ],
-//       });
+      expect(response.statusCode).toBe(200);
+      expect(response.body.message).toBe("RSVP processed successfully.");
+    });
+  });
 
-//       console.log("Mock Response:", db.query.mock.calls);
+  describe("GET /api/event/search", () => {
+	beforeEach(() => {
+		db.query.mockResolvedValueOnce({
+			rows: [
+				{ event_id: 1, event_name: "Tech Conference", tags: "Technology, Networking" , start_time : "2025-02-11T02:42:17.076Z"},
+				{ event_id: 2, event_name: "Art Exhibition", tags: "Art, Culture" , start_time : "2025-03-11T02:42:17.076Z" },
+			],
+		});
+	});
+    test("Successfully searches events by query and tags", async () => {
 
-//       const response = await request(app).get("/api/event/search").query({
-//         query: "Tech",         
-//         tags: "Technology"    
-//       });
 
-//       console.log("Response Body:", JSON.stringify(response.body, null, 2));
+      const response = await request(app).get("/api/event/search").query({
+        query: "art",         
+      });
 
-//       expect(response.statusCode).toBe(200);
-//       expect(response.body).toHaveLength(1); 
-//       expect(response.body[0].event_name).toBe("Tech Conference"); 
-//     });
-//   });
+      console.log("Response Body:", JSON.stringify(response.body));
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toHaveLength(1); 
+      expect(response.body[0].event_name).toBe("Art Exhibition"); 
+    });
+  });
   
+});

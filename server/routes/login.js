@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db"); // Adjust the path if necessary
+const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// Login Route
+
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
@@ -13,7 +13,6 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // Check if the user exists
     const userQuery = "SELECT * FROM users WHERE email = $1";
     const userResult = await pool.query(userQuery, [email]);
 
@@ -23,7 +22,10 @@ router.post("/", async (req, res) => {
 
     const user = userResult.rows[0];
 
-    // Compare passwords
+    if (!user.is_verified) {
+      return res.status(403).json({ success: false, message: "Email not verified. Please verify your email to log in." });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -33,7 +35,7 @@ router.post("/", async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" } 
+      { expiresIn: "1h" }
     );
 
     res.status(200).json({
@@ -51,5 +53,6 @@ router.post("/", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 module.exports = router;

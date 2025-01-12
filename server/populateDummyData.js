@@ -3,7 +3,7 @@ const { faker } = require("@faker-js/faker");
 
 const populateDummyData = async () => {
 	try {
-		console.log("Starting to populate dummy data...");
+		console.log("Starting to populate dummy data... wooho");
 
 		// Insert static interests
 		const interestNames = [
@@ -112,11 +112,75 @@ const populateDummyData = async () => {
 			);
 		}
 
+		const classIds = [];
+		for (let i = 0; i < 10; i++) {
+			const classResult = await pool.query(
+				`INSERT INTO catalogue_classes 
+                 (class_name, description, department, credits)
+                 VALUES ($1, $2, $3, $4)
+                 RETURNING class_id`,
+				[
+					faker.lorem.words(3),
+					faker.lorem.sentence(),
+					faker.helpers.arrayElement([
+						"Computer Science",
+						"Mathematics",
+						"Physics",
+						"Engineering",
+						"Business Administration",
+					]),
+					faker.number.int({ min: 1, max: 4 }),
+				]
+			);
+			classIds.push(classResult.rows[0].class_id);
+		}
+
+		// List of UCF rooms
+		const ucfRooms = ["MSB 241", "ENG 1 101", "TCH 344", "HEC 101", "CSB 221"];
+
+		// Assign classes to users
+		for (const userId of userIds) {
+			const randomClasses = faker.helpers.arrayElements(
+				classIds,
+				faker.number.int({ min: 1, max: 4 })
+			);
+			for (const classId of randomClasses) {
+				const dayOfWeek = faker.helpers.arrayElement([
+					"Monday",
+					"Tuesday",
+					"Wednesday",
+					"Thursday",
+					"Friday",
+				]);
+				const startHour = faker.number.int({ min: 8, max: 17 }); // 8 AM to 5 PM
+				const startMinute = faker.helpers.arrayElement([0, 30]); // 00 or 30 minutes
+				const startTime = `${String(startHour).padStart(2, "0")}:${String(
+					startMinute
+				).padStart(2, "0")}`;
+				const endHour = startHour + 1; // 1-hour class duration
+				const endTime = `${String(endHour).padStart(2, "0")}:${String(
+					startMinute
+				).padStart(2, "0")}`;
+				const location = faker.helpers.arrayElement(ucfRooms);
+
+				await pool.query(
+					`INSERT INTO classes 
+                     (class_id, user_id, day_of_week, start_time, end_time, location)
+                     VALUES ($1, $2, $3, $4, $5, $6)`,
+					[classId, userId, dayOfWeek, startTime, endTime, location]
+				);
+			}
+		}
+
+		
+
 		console.log("Dummy data populated successfully!");
 	} catch (err) {
 		console.error("Error populating dummy data:", err.message);
 		throw err;
 	}
 };
+
+populateDummyData();
 
 module.exports = populateDummyData;
