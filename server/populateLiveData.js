@@ -22,14 +22,13 @@ function sanitizeAndParseDateTime(dateTimeStr) {
 async function upsertEvent(event) {
 	const query = `
     INSERT INTO events (
-      event_name, event_type, tags, web_link, start_time, end_time,
+      event_name, tags, web_link, start_time, end_time,
       photo_url, location, latitude, longitude, organization, source_url, user_id
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
     )
     ON CONFLICT (source_url) DO UPDATE SET
       event_name = EXCLUDED.event_name,
-      event_type = EXCLUDED.event_type,
       tags = EXCLUDED.tags,
       web_link = EXCLUDED.web_link,
       start_time = EXCLUDED.start_time,
@@ -43,7 +42,6 @@ async function upsertEvent(event) {
 
 	const values = [
 		event.event_name,
-		event.event_type,
 		event.tags,
 		event.web_link,
 		event.start_time,
@@ -80,7 +78,6 @@ function processCSV(filePath) {
 
 				events.push({
 					event_name: row.Title,
-					event_type: 1, // Default event type; customize if necessary
 					tags: null, // Customize if you have tag data
 					web_link: row.URL,
 					start_time: startTime,
