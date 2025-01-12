@@ -1,0 +1,113 @@
+.modalForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    max-width: 70%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.input-group input {
+    border-width: 1px;
+    border-radius: 0.5rem;
+
+    padding-top: 0.6em;
+    padding-bottom: 0.6rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.input-group input:focus {
+    outline-width: 1px;
+    outline-color: #3d73c9;
+}
+
+.input-group label {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.input-group-description {
+    font-size: 0.9rem;
+
+    color: #27272a;
+}
+
+.input-checkbox-container {
+    gap: 0.5rem;
+}
+
+.input-checkbox {
+    border-width: 1px;
+    border-radius: 0.5rem;
+
+    height: fit-content;
+
+    transition: all 0.2s;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.input-checkbox:hover > * {
+    cursor: pointer;
+}
+
+.input-checkbox input {
+    border: none;
+    padding: 0;
+
+    color: #000;
+    font-weight: bold;
+}
+
+.input-checkbox label {
+    font-size: 0.9rem;
+    font-weight: normal;
+
+    color: #27272a;
+}
+
+.input-checkbox:hover {
+    border-width: 2px;
+}
+
+.input-checkbox.active {
+    border-width: 2px;
+    border-color: #3d73c9;
+}
+
+.modalForm button {
+    border-width: 1px;
+    border-radius: 0.5rem;
+
+    width: fit-content;
+
+    padding-top: 0.6em;
+    padding-bottom: 0.6rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    background-color: #3d73c9;
+    color: white;
+
+    transition: all 0.2s;
+}
