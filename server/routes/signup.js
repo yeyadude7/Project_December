@@ -4,6 +4,7 @@ const pool = require("../db");
 const bcrypt = require("bcrypt");
 const { sendVerificationEmail } = require("../mailtrap/emails");
 const {generateTokenAndSetCookie} = require("../utils");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -33,6 +34,10 @@ router.post("/", async (req, res) => {
     const user = await pool.query(insertUserQuery, [name, email, hashedPassword, false, verificationCode]);
     const userId = user.rows[0].id;
 
+    // const verificationToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // const verificationLink = `${process.env.BACKEND_URL}/api/emailverification/verify?token=${verificationCode}`;
+    
+    console.log("Verification Code :", verificationCode);
     generateTokenAndSetCookie(res, userId);
 
     await sendVerificationEmail(email, verificationCode);

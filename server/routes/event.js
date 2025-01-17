@@ -7,6 +7,8 @@ const {
 	handleBadRequestError,
 } = require("../utils");
 
+const { format } = require("date-fns"); // To format timestamps
+
 // Create Event
 router.post("/create", async (req, res) => {
 	const {
@@ -85,7 +87,6 @@ router.get("/search", async (req, res) => {
 
 		console.log("HULULU: ", searchedEvents.rows);
         res.status(200).json(searchedEvents.rows);
-		// res.status(200).json(null);
     } catch (err) {
         console.error("Error during search:", err.message);
         handleServerError(res, err);
@@ -202,6 +203,55 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 // Handle RSVP for any event
+
+// Generate Add-to-Calendar Link
+router.get("/calendar-link/:id", async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const event = await pool.query(`SELECT * FROM events WHERE event_id = $1`, [id]);
+
+		if (event.rows.length === 0) {
+			return handleNotFoundError(res, "Event");
+		}
+
+		const eventData = event.rows[0];
+
+		// Format start and end times
+		const startTime = format(new Date(eventData.start_time), "yyyyMMdd'T'HHmmss'Z'");
+		const endTime = eventData.end_time
+			? format(new Date(eventData.end_time), "yyyyMMdd'T'HHmmss'Z'")
+			: null;
+
+		// Google Calendar URL
+		const googleCalendarLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+			eventData.event_name
+		)}&dates=${startTime}/${endTime || startTime}&details=${encodeURIComponent(
+			eventData.tags || ""
+		)}&location=${encodeURIComponent(eventData.location)}`;
+
+		// iCalendar (.ics file content)
+		const iCalContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:${eventData.event_name}
+DTSTART:${startTime}
+${endTime ? `DTEND:${endTime}` : ""}
+LOCATION:${eventData.location}
+DESCRIPTION:${eventData.tags || ""}
+END:VEVENT
+END:VCALENDAR`;
+
+		res.json({
+			googleCalendarLink,
+			iCalContent,
+		});
+	} catch (err) {
+		handleServerError(res, err);
+	}
+});
+
+
 router.post("/rsvp", async (req, res) => {
     const { user_id, event_id, did_rsvp } = req.body;
 

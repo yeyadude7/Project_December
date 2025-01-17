@@ -26,7 +26,9 @@ const setupDatabase = async () => {
                 year VARCHAR(255),
                 group_preference VARCHAR(255),
                 is_verified BOOLEAN DEFAULT FALSE,
-                verification_code VARCHAR(6)
+                verification_code VARCHAR(6),
+                reset_code VARCHAR(6);
+
             );
         `);
 
