@@ -3,52 +3,6 @@ const router = express.Router();
 const pool = require("../db");
 const bcrypt = require("bcrypt");
 
-/// Create Actions
-router.post("/create", async (req, res) => {
-	try {
-		const {
-			name,
-			email,
-			password,
-			major,
-			goal,
-			photo,
-			type_of_student,
-			year,
-			group_preference,
-		} = req.body;
-
-		// Sconst hashedPassword = await bcrypt.hash(password, 10); // Hash the password for security
-
-		const newUser = await pool.query(
-			`INSERT INTO users (name, email, password, major, goal, photo, type_of_student, year, group_preference) 
-			 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
-			 RETURNING *`,
-			[
-				name,
-				email,
-				password,
-				major,
-				goal,
-				photo,
-				type_of_student,
-				year,
-				group_preference,
-			]
-		);
-
-		res.json(newUser.rows[0]);
-	} catch (err) {
-		if (err.code === "23505") {
-			// Unique constraint violation (e.g., email already exists)
-			return res.status(409).json({ message: "Email is already in use." });
-		}
-		res.status(500).send("Server error");
-	}
-});
-
-/// Change Actions
-
 // Update a user
 router.put("/update/:id", async (req, res) => {
 	try {
