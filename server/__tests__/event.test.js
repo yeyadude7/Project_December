@@ -218,6 +218,100 @@ describe("Event Routes", () => {
 		});
 	});
 
+	// Test: Get Events for the Current Week
+	describe("GET /api/event/week", () => {
+		test("Successfully retrieves events for the current week", async () => {
+			db.query.mockResolvedValueOnce({
+				rows: [
+					{
+						event_id: 1,
+						event_name: "Weekly Standup",
+						start_time: "2024-12-18T09:00:00.000Z",
+						end_time: "2024-12-18T10:00:00.000Z",
+					},
+					{
+						event_id: 2,
+						event_name: "Tech Meetup",
+						start_time: "2024-12-20T15:00:00.000Z",
+						end_time: "2024-12-20T17:00:00.000Z",
+					},
+				],
+			});
+
+			const response = await request(app).get("/api/event/week");
+
+			expect(response.statusCode).toBe(200);
+			expect(response.body).toHaveLength(2);
+			expect(response.body[0].event_name).toBe("Weekly Standup");
+			expect(response.body[1].event_name).toBe("Tech Meetup");
+		});
+
+		test("Handles no events for the current week", async () => {
+			db.query.mockResolvedValueOnce({ rows: [] });
+
+			const response = await request(app).get("/api/event/week");
+
+			expect(response.statusCode).toBe(404);
+			expect(response.body.message).toBe(
+				"Events for the current week not found."
+			);
+		});
+
+		test("Handles server error during retrieval of weekly events", async () => {
+			db.query.mockRejectedValueOnce(new Error("Database error"));
+
+			const response = await request(app).get("/api/event/week");
+
+			expect(response.statusCode).toBe(500);
+			expect(response.body.message).toBe("Server error");
+		});
+	});
+
+	// Test: Get Events RSVP'd by User
+	describe("GET /api/event/rsvp/:user_id", () => {
+		test("Successfully retrieves RSVP'd events for a user", async () => {
+			db.query.mockResolvedValueOnce({
+				rows: [
+					{
+						event_id: 1,
+						event_name: "Tech Meetup",
+					},
+					{
+						event_id: 2,
+						event_name: "Hackathon",
+					},
+				],
+			});
+
+			const response = await request(app).get("/api/event/rsvp/1");
+
+			expect(response.statusCode).toBe(200);
+			expect(response.body).toHaveLength(2);
+			expect(response.body[0].event_name).toBe("Tech Meetup");
+			expect(response.body[1].event_name).toBe("Hackathon");
+		});
+
+		test("Fails when user has no RSVP'd events", async () => {
+			db.query.mockResolvedValueOnce({ rows: [] });
+
+			const response = await request(app).get("/api/event/rsvp/99");
+
+			expect(response.statusCode).toBe(404);
+			expect(response.body.message).toBe(
+				"RSVP'd events for the user not found."
+			);
+		});
+
+		test("Handles server error during RSVP retrieval", async () => {
+			db.query.mockRejectedValueOnce(new Error("Database error"));
+
+			const response = await request(app).get("/api/event/rsvp/1");
+
+			expect(response.statusCode).toBe(500);
+			expect(response.body.message).toBe("Server error");
+		});
+	});
+
 	// Test: Delete Event
 	describe("DELETE /api/event/delete/:id", () => {
 		test("Successfully deletes an event", async () => {
