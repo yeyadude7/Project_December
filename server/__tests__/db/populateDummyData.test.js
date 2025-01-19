@@ -1,6 +1,6 @@
 const pool = require("../../db");
-const populateDummyData = require("../../populateDummyData");
-const setupDatabase = require("../../setupDatabase");
+const populateDummyData = require("../../scripts/populateDummyData");
+const setupDatabase = require("../../scripts/setupDatabase");
 
 beforeEach(async () => {
 	console.log("BeforeEach: Setting up database...");

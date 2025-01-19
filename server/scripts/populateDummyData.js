@@ -1,4 +1,4 @@
-const pool = require("./db");
+const pool = require("../db");
 const { faker } = require("@faker-js/faker");
 
 const isDebugMode = process.env.LOG_LEVEL === "DEBUG";
@@ -96,6 +96,43 @@ const populateDummyData = async () => {
 				await pool.query(
 					`INSERT INTO user_interests (user_id, interest_id) VALUES ($1, $2)`,
 					[userId, interestId]
+				);
+			}
+		}
+
+		// Insert dummy activities
+		log("Inserting user activities...");
+		const activityNames = [
+			"Volunteering",
+			"Badminton Club",
+			"Chess Club",
+			"Photography Club",
+			"Debate Society",
+			"Music Band",
+		];
+		for (let i = 0; i < userIds.length; i++) {
+			const userId = userIds[i];
+			const randomActivities = faker.helpers.arrayElements(
+				activityNames,
+				faker.number.int({ min: 1, max: 3 })
+			);
+
+			for (const activityName of randomActivities) {
+				await pool.query(
+					`INSERT INTO user_activities (user_id, activity_name, position)
+                     VALUES ($1, $2, $3) 
+                     ON CONFLICT (user_id, activity_name) DO NOTHING`,
+					[
+						userId,
+						activityName,
+						faker.helpers.arrayElement([
+							"Member",
+							"Coordinator",
+							"President",
+							"Vice President",
+							"Treasurer",
+						]),
+					]
 				);
 			}
 		}

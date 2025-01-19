@@ -1,13 +1,13 @@
 const fs = require("fs");
 const path = require("path");
-const pool = require("./db");
+const pool = require("../db");
 
 const setupDatabase = async () => {
 	try {
 		console.log("Setting up database...");
 
 		// Read the schema.sql file
-		const schemaPath = path.join(__dirname, "schema.sql");
+		const schemaPath = "../server/schema/schema.sql";
 		const schema = fs.readFileSync(schemaPath, "utf8");
 
 		// Execute the SQL schema

@@ -1,4 +1,5 @@
 -- Drop existing tables
+DROP TABLE IF EXISTS user_activities CASCADE;
 DROP TABLE IF EXISTS event_attendance CASCADE;
 DROP TABLE IF EXISTS friendship_status CASCADE;
 DROP TABLE IF EXISTS user_interests CASCADE;
@@ -70,3 +71,13 @@ CREATE TABLE friendship_status (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user1_id, user2_id)
 );
+
+-- Create User Activities Table
+CREATE TABLE user_activities (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    activity_name VARCHAR(255) NOT NULL,
+    position VARCHAR(255) NOT NULL,
+    UNIQUE (user_id, activity_name)
+);
+

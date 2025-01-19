@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const csv = require("csv-parser");
-const pool = require("./db");
+const pool = require("../db");
 const { parse } = require("date-fns");
 
 // Path to CSV file
