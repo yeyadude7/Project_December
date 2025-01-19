@@ -8,7 +8,7 @@
 		"reset-db": "npm run setup-db && npm run seed-db",
 		"live-db": "node scripts/populateLiveData.js",
 		"test": "jest",
-		"test --coverage": "jest --coverage",
+		"test:coverage": "jest --coverage",
 		"test:core": "jest --testPathIgnorePatterns=__tests__/db/",
 		"test:file": "jest"
 	},

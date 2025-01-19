@@ -51,12 +51,7 @@ jobs:
           DB_NAME: test_db
           DB_USER: postgres
           DB_PASSWORD: password
-        run: npm run test --coverage
-
-      # 5. Debug: List files to confirm coverage folder exists
-      - name: List Files in Server Directory
-        working-directory: ./server
-        run: ls -R
+        run: npm run test:coverage
 
       # 5. Upload coverage report as an artifact
       - name: Upload Coverage Report
@@ -64,8 +59,3 @@ jobs:
         with:
           name: coverage-report
           path: ./server/coverage
-
-      # 7. Clean up coverage folder
-      - name: Clean Up Coverage Folder
-        working-directory: ./server
-        run: rm -rf coverage
