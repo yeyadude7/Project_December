@@ -8,6 +8,7 @@ Welcome to the backend documentation for **Project December**. This guide outlin
 
 - [Overview](#overview)
 - [Technologies Used](#technologies-used)
+- [Database Diagram](#database-diagram)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
   - [Installing Dependencies](#installing-dependencies)
@@ -32,6 +33,12 @@ The backend for **Project December** is a robust system providing RESTful API en
 - **PostgreSQL**: Relational database system.
 - **Jest**: Testing framework for unit tests.
 - **Selenium (Python)**: Used for web scraping live data (separate from core backend functionality).
+
+---
+
+## Database Diagram
+
+A visual representation of the database schema can be found [here](schema/diagram.pdf). It provides a detailed overview of the relationships and structure of the database.
 
 ---
 
