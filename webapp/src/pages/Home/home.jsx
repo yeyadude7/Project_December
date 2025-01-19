@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-
 import { Link } from "react-router-dom";
 import "./home.css";
+import React, { useEffect, useState } from "react";
+import Config from "../../config.js";
 import { SocialIcon } from "react-social-icons";
 import StickyNavbar from "../../components/StickyNavbar/stickyNavbar.jsx";
 import bannerImage from "../../images/temp_banner_image.jpg";
@@ -19,9 +19,63 @@ const Profile = () => {
     setShowModal(false);
   };
 
+  const [users, setUsers] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const options = {
+    weekday: 'long', // Full weekday name
+    month: 'short',  // Abbreviated month name
+    day: 'numeric'   // Day of the month
+  };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          `${Config.API_BASE_URL}:${Config.SERVER_PORT}/api/event/all`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
+        }
+
+        const data = await response.json();
+
+        const formattedEvents = data.map((event) => ({
+          id: event.event_id,
+          title: event.event_name,
+          startTime: new Date(event.start_time).toLocaleDateString('en-US', options),
+          photoUrl: event.photo_url,
+          location: event.location,
+          sourceUrl: event.source_url,
+        }));
+
+        setEvents(formattedEvents);
+        // console.log(events);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    const fetchFromURL = async () => {
+      const request = await fetch(`${window.location.protocol}//${window.location.hostname}:${Config.SERVER_PORT}/api/user/all`);
+      const response = await request.json();
+      
+      setUsers(response);
+      console.log(users);
+    };
+
+    fetchFromURL();
+    fetchEvents();
+  }, []);
+
   return (
     <>
-      <div className="grid grid-cols-1 justify-items-center">
+      <div className="grid grid-cols-1 justify-items-center pb-24">
         {/* Header element */}
         <div className="w-96 gap-2 columns-2">
           <div>
@@ -89,56 +143,91 @@ const Profile = () => {
         <div class="mt-4 bg-blue-500 w-[400px] h-26 rounded-xl overflow-hidden shadow-lg">
           <div class="px-6 pb-4 pt-2">
             <div className="discover_tag w-16">Tonight</div>
-            <p class="pt-2 text-white text-base font-semibold">9 friends are going out!</p>
+            <p class="pt-2 text-white text-base font-semibold">
+              9 friends are going out!
+            </p>
             <p class="text-white text-xs">Click to see who's going</p>
           </div>
         </div>
 
         {/* This Week */}
-        <div className="pt-8 pr-72">
-          <div className="pr-6">
-            <h1 className="text-xl font-semibold">This Week</h1>
+        <div className="pt-8">
+          <div className="columns-2">
+            <h1 className="text-xl font-normal pr-[100px]">This Week</h1>
+            <Link to="/events">
+            <h1 className="text-sm pt-1 text-blue-500 pl-[100px]">See more &gt; </h1>
+            </Link>
           </div>
         </div>
 
         {/* Cards */}
 
         <div className="pt-2 justify-center items-center">
-          <div className="columns-2">
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={concertImage} className="object-fill"></img>
+          {!loading && events ? (
+            <div className="columns-2">
+              {events.filter((item, index) => index < 2).map((event) => (
+                <div className="w-48 h-38 ">
+                  <div className="w-48 h-28 rounded-xl overflow-hidden shadow-lg">
+                    <img src={event.photoUrl} className=""></img>
+                  </div>
+                  
+                  <h1 className="font-semibold">{event.title} ⭐</h1>
+                  <p className="font-light text-sm">📍{event.startTime}</p>
+                </div>
+              ))}
             </div>
-
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={partyImage} className="object-fill"></img>
-            </div>
-          </div>
+          ) : loading ? (
+            <>Currently loading events...</>
+          ) : error ? (
+            <>Error loading events</>
+          ) : 
+            <>No events this week!</>
+            }
         </div>
 
-        {/* This Week */}
-        <div className="pt-8 pr-[260px]">
-          <div className="pr-6">
-            <h1 className="text-xl font-semibold">Leaderboard</h1>
+        {/* LeaderBoard */}
+        <div className="pt-8">
+          <div className="columns-2">
+            <h1 className="text-xl font-normal pr-[80px]">Leaderboard</h1>
+            <Link to="/connect">
+            <h1 className="text-sm pt-1 text-blue-500 pl-[100px]">See more &gt; </h1>
+            </Link>
           </div>
         </div>
 
         {/* Cards */}
 
         <div className="pt-2 justify-center items-center">
-          <div className="columns-2">
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={concertImage} className="object-fill"></img>
+          {!loading && users ? (
+            <div className="columns-2">
+              {users.filter((item, index) => index < 2).map((user) => (
+                <div className="w-48 h-38 ">
+                  <div className="w-48 h-28 rounded-xl overflow-hidden shadow-lg">
+                    <img src={user.photo} className=""></img>
+                  </div>
+                  
+                  <h1 className="font-semibold">{user.name} ⭐</h1>
+                  <p className="font-light text-sm">📍{user.major + ", " + user.year}</p>
+                </div>
+              ))}
             </div>
-
-            <div class="w-48 h-32 rounded overflow-hidden shadow-lg">
-              <img src={partyImage} className="object-fill"></img>
-            </div>
-          </div>
+          ) : loading ? (
+            <>Currently loading leaders...</>
+          ) : error ? (
+            <>Error loading leaders</>
+          ) : 
+            <>No events this week!</>
+            }
         </div>
-        
+
+
       </div>
       <StickyNavbar />
-      <SignupModal show={showModal} title="Sign-Up" handleClose={handleCloseModal}/>
+      <SignupModal
+        show={showModal}
+        title="Sign-Up"
+        handleClose={handleCloseModal}
+      />
     </>
   );
 };

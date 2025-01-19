@@ -97,6 +97,25 @@ router.get("/week", async (req, res) => {
 	}
 });
 
+// Get Events for the Current Week
+router.get("/weekTest", async (req, res) => {
+	try {
+		// Query events happening within the next 7 days
+		const events = await pool.query(
+			`SELECT * FROM events 
+			 LIMIT 2`
+		);
+
+		if (events.rows.length === 0) {
+			return handleNotFoundError(res, "Events for the current week");
+		}
+
+		res.status(200).json(events.rows);
+	} catch (err) {
+		handleServerError(res, err);
+	}
+});
+
 // Search Events
 router.get("/search", async (req, res) => {
 	const { query, tags, event_type } = req.query;
