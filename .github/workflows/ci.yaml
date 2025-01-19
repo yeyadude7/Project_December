@@ -31,7 +31,7 @@ jobs:
       # 4. Run tests and generate coverage
       - name: Run Tests with Coverage
         working-directory: ./server
-        run: npm run test:coverage
+        run: npm run test --coverage
 
       # 5. Upload coverage report as artifact
       - name: Upload Coverage Report
