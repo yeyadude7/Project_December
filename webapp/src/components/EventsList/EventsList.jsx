@@ -65,9 +65,9 @@ const EventsList = () => {
 	}
 
 	return (
-		<div className="events-list">
+		<div className="flex items-center justify-center flex-col gap-8">
 			{events.map((event) => (
-				<div className="event-card" key={event.id}>
+				<div className="event-rounded-3xl overflow-hidden border-1 border-slate-300 hover:border-slate-400 bg-white shadow-md hover:shadow-lg focus:shadow-md active:shadow-md w-full relative hover:scale-[1.02] transition-all focus:scale-[0.98] active:scale[0.98]" key={event.id}>
 					<div className="event-image-container">
 						<img
 							src={event.photoUrl}

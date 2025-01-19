@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 function StickyNavbar() {
     return (
         <div className="fixed bottom-0 w-svw h-20 flex justify-center items-center border-t-1 border-zinc-200">
@@ -7,7 +7,9 @@ function StickyNavbar() {
                 <NavbarButton text="Discover" href=""/>
                 <NavbarButton text="Events" href="events"/>
                 <div className="flex justify-center items-center">
+                    <Link to="/addevent">
                     <button className="pb-1 bg-highlight h-12 w-12 text-3xl rounded-full text-white hover:brightness-150 transition-all">+</button>
+                    </Link>
                 </div>
                 <NavbarButton text="Connect" href="connect"/>
                 <NavbarButton text="Profile" href="mainprofile" />

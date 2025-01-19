@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import EventsList from "./components/EventsList/EventsList";
 import Events from "./pages/Events/events";
 import AddEvent from "./pages/AddEvent/addEvent";
+import EventDescription from "./pages/EventDescription/eventDescription";
 import ProfileEditor from "./pages/ProfileEditor/profileEditor";
 import Profile from "./pages/Profile/profile";
 import AboutMe from "./pages/AboutMe/aboutme";
@@ -23,6 +24,7 @@ function App() {
         <Route path = "/editprofile" element = {<ProfileEditor/>}/>
         <Route path = "/events" element = {<Events/>}/>
         <Route path = "/addevent" element = {<AddEvent/>}/>
+        <Route path = "/eventdescription" element = {<EventDescription/>}/>
         <Route path = "/connect" element = {<Connect/>}/>
         <Route path = "/aboutme" element = {<AboutMe/>}/>
         <Route path = "/status" element = {<Status/>}/>

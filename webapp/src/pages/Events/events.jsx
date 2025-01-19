@@ -8,7 +8,7 @@ const Events = () => {
     <div className="px-48 flex justify-center items-center">
 
 
-      <div className="">
+      <div className="px-48">
         <EventHeader/>
         <EventsList />
       </div>
