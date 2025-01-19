@@ -53,9 +53,19 @@ jobs:
           DB_PASSWORD: password
         run: npm run test --coverage
 
+      # 5. Debug: List files to confirm coverage folder exists
+      - name: List Files in Server Directory
+        working-directory: ./server
+        run: ls -R
+
       # 5. Upload coverage report as an artifact
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: ./server/coverage
+
+      # 7. Clean up coverage folder
+      - name: Clean Up Coverage Folder
+        working-directory: ./server
+        run: rm -rf coverage
