@@ -30,7 +30,7 @@ async function upsertEvent(event) {
     ON CONFLICT (source_url) DO UPDATE SET
       event_name = EXCLUDED.event_name,
       event_type = EXCLUDED.event_type,
-	  event_description = EXCLUDED.event_description,
+	    event_description = EXCLUDED.event_description,
       tags = EXCLUDED.tags,
       web_link = EXCLUDED.web_link,
       start_time = EXCLUDED.start_time,
