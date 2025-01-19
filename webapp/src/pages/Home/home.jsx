@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { Link } from "react-router-dom";
 import "./home.css";
 import { SocialIcon } from "react-social-icons";
@@ -8,8 +10,15 @@ import partyImage from "../../images/party_image.jpg";
 import seminarImage from "../../images/seminar_image.jpg";
 import concertImage from "../../images/concert_image.jpg";
 import profileImage from "../../images/profile_image.jpg";
+import SignupModal from "../../components/Modal/SignupModal/signupModal.jsx";
 
 const Profile = () => {
+  const [showModal, setShowModal] = useState(true);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 justify-items-center">
@@ -129,6 +138,7 @@ const Profile = () => {
         
       </div>
       <StickyNavbar />
+      <SignupModal show={showModal} title="Sign-Up" handleClose={handleCloseModal}/>
     </>
   );
 };

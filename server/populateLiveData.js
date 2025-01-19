@@ -22,19 +22,21 @@ function sanitizeAndParseDateTime(dateTimeStr) {
 async function upsertEvent(event) {
 	const query = `
     INSERT INTO events (
-      event_name, tags, web_link, start_time, end_time,
-      photo_url, location, latitude, longitude, organization, source_url, user_id
+      event_name, event_type, event_description, tags, web_link, start_time, end_time,
+      photo_url, event_location, latitude, longitude, organization, source_url, user_id
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
     )
     ON CONFLICT (source_url) DO UPDATE SET
       event_name = EXCLUDED.event_name,
+      event_type = EXCLUDED.event_type,
+	    event_description = EXCLUDED.event_description,
       tags = EXCLUDED.tags,
       web_link = EXCLUDED.web_link,
       start_time = EXCLUDED.start_time,
       end_time = EXCLUDED.end_time,
       photo_url = EXCLUDED.photo_url,
-      location = EXCLUDED.location,
+      event_location = EXCLUDED.event_location,
       latitude = EXCLUDED.latitude,
       longitude = EXCLUDED.longitude,
       organization = EXCLUDED.organization;
@@ -42,12 +44,14 @@ async function upsertEvent(event) {
 
 	const values = [
 		event.event_name,
+		event.event_type,
+		event.event_description,
 		event.tags,
 		event.web_link,
 		event.start_time,
 		event.end_time,
 		event.photo_url,
-		event.location,
+		event.event_location,
 		event.latitude,
 		event.longitude,
 		event.organization,
@@ -78,12 +82,14 @@ function processCSV(filePath) {
 
 				events.push({
 					event_name: row.Title,
+					event_type: 1, // Default event type; customize if necessary
+					event_description: null,
 					tags: null, // Customize if you have tag data
 					web_link: row.URL,
 					start_time: startTime,
 					end_time: null, // Customize if you have end_time data
 					photo_url: photoUrl,
-					location: location,
+					event_location: location,
 					latitude: null, // Add geocoding logic if necessary
 					longitude: null, // Add geocoding logic if necessary
 					organization: row.Organization,

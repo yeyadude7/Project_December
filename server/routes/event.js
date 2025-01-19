@@ -12,12 +12,13 @@ router.post("/create", async (req, res) => {
 	const {
 		event_name,
 		event_type,
+		event_description,
 		tags,
 		web_link,
 		start_time,
 		end_time,
 		photo_url,
-		location,
+		event_location,
 		latitude,
 		longitude,
 		organization,
@@ -25,25 +26,32 @@ router.post("/create", async (req, res) => {
 		user_id,
 	} = req.body;
 
-	if (!event_name || !event_type || !start_time || !location) {
+	if (
+		!event_name ||
+		!event_type ||
+		!start_time ||
+		!event_location ||
+		!event_description
+	) {
 		return handleBadRequestError(res, "Missing required fields.");
 	}
 
 	try {
 		const newEvent = await pool.query(
 			`INSERT INTO events 
-            (event_name, event_type, tags, web_link, start_time, end_time, photo_url, location, latitude, longitude, organization, source_url, user_id) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+            (event_name, event_type, event_description, tags, web_link, start_time, end_time, photo_url, event_location, latitude, longitude, organization, source_url, user_id) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
             RETURNING *`,
 			[
 				event_name,
 				event_type,
+				event_description,
 				tags,
 				web_link,
 				start_time,
 				end_time,
 				photo_url,
-				location,
+				event_location,
 				latitude,
 				longitude,
 				organization,
@@ -68,6 +76,27 @@ router.get("/all", async (req, res) => {
 	}
 });
 
+// Get Events for the Current Week
+router.get("/week", async (req, res) => {
+	try {
+		// Query events happening within the next 7 days
+		const events = await pool.query(
+			`SELECT * FROM events 
+             WHERE start_time >= CURRENT_DATE 
+               AND start_time < CURRENT_DATE + INTERVAL '7 days'
+             ORDER BY start_time ASC`
+		);
+
+		if (events.rows.length === 0) {
+			return handleNotFoundError(res, "Events for the current week");
+		}
+
+		res.status(200).json(events.rows);
+	} catch (err) {
+		handleServerError(res, err);
+	}
+});
+
 // Search Events
 router.get("/search", async (req, res) => {
 	const { query, tags, event_type } = req.query;
@@ -85,6 +114,28 @@ router.get("/search", async (req, res) => {
 		return res.status(200).json(events.rows);
 	} catch (err) {
 		console.error("Error during search:", err.message);
+		handleServerError(res, err);
+	}
+});
+
+// Get Events RSVP'd by User
+router.get("/rsvp/:user_id", async (req, res) => {
+	const { user_id } = req.params;
+
+	try {
+		const rsvpEvents = await pool.query(
+			`SELECT e.* FROM events e
+             JOIN event_attendance ea ON e.event_id = ea.event_id
+             WHERE ea.user_id = $1 AND ea.did_rsvp = true`,
+			[user_id]
+		);
+
+		if (rsvpEvents.rows.length === 0) {
+			return handleNotFoundError(res, "RSVP'd events for the user");
+		}
+
+		res.status(200).json(rsvpEvents.rows);
+	} catch (err) {
 		handleServerError(res, err);
 	}
 });
@@ -114,12 +165,13 @@ router.put("/update/:id", async (req, res) => {
 	const {
 		event_name,
 		event_type,
+		event_description,
 		tags,
 		web_link,
 		start_time,
 		end_time,
 		photo_url,
-		location,
+		event_location,
 		latitude,
 		longitude,
 		organization,
@@ -133,29 +185,31 @@ router.put("/update/:id", async (req, res) => {
              SET 
                  event_name = COALESCE($1, event_name),
                  event_type = COALESCE($2, event_type),
-                 tags = COALESCE($3, tags),
-                 web_link = COALESCE($4, web_link),
-                 start_time = COALESCE($5, start_time),
-                 end_time = COALESCE($6, end_time),
-                 photo_url = COALESCE($7, photo_url),
-                 location = COALESCE($8, location),
-                 latitude = COALESCE($9, latitude),
-                 longitude = COALESCE($10, longitude),
-                 organization = COALESCE($11, organization),
-                 source_url = COALESCE($12, source_url),
-                 user_id = COALESCE($13, user_id),
+				 event_description = COALESE($3, event_description),
+                 tags = COALESCE($4, tags),
+                 web_link = COALESCE($5, web_link),
+                 start_time = COALESCE($6, start_time),
+                 end_time = COALESCE($7, end_time),
+                 photo_url = COALESCE($8, photo_url),
+                 event_location = COALESE($9, event_location),
+                 latitude = COALESCE($10, latitude),
+                 longitude = COALESCE($11, longitude),
+                 organization = COALESCE($12, organization),
+                 source_url = COALESCE($13, source_url),
+                 user_id = COALESCE($14, user_id),
                  updated_at = CURRENT_TIMESTAMP
-             WHERE event_id = $14 
+             WHERE event_id = $15
              RETURNING *`,
 			[
 				event_name,
 				event_type,
+				event_description,
 				tags,
 				web_link,
 				start_time,
 				end_time,
 				photo_url,
-				location,
+				event_location,
 				latitude,
 				longitude,
 				organization,
@@ -200,48 +254,50 @@ router.delete("/delete/:id", async (req, res) => {
 
 // Handle RSVP for any event
 router.post("/rsvp", async (req, res) => {
-    const { user_id, event_id, did_rsvp } = req.body;
+	const { user_id, event_id, did_rsvp } = req.body;
 
-    if (!user_id || !event_id || did_rsvp === undefined) {
-        return res.status(400).json({ message: "Not getting input correctly." });
-    }
+	if (!user_id || !event_id || did_rsvp === undefined) {
+		return res.status(400).json({ message: "Not getting input correctly." });
+	}
 
-    try {
-        const rsvpRecord = await pool.query(
-            "SELECT * FROM event_attendance WHERE user_id = $1 AND event_id = $2",
-            [user_id, event_id]
-        );
+	try {
+		const rsvpRecord = await pool.query(
+			"SELECT * FROM event_attendance WHERE user_id = $1 AND event_id = $2",
+			[user_id, event_id]
+		);
 
-        if (rsvpRecord.rows.length > 0) {
-            const updateRSVP = await pool.query(
-                `UPDATE event_attendance
+		if (rsvpRecord.rows.length > 0) {
+			const updateRSVP = await pool.query(
+				`UPDATE event_attendance
                  SET did_rsvp = $1
                  WHERE user_id = $2 AND event_id = $3
                  RETURNING *`,
-                [did_rsvp, user_id, event_id]
-            );
+				[did_rsvp, user_id, event_id]
+			);
 
-            return res.status(200).json({
-                message: "RSVP status updated successfully.",
-                rsvp: updateRSVP.rows[0],
-            });
-        }
+			return res.status(200).json({
+				message: "RSVP status updated successfully.",
+				rsvp: updateRSVP.rows[0],
+			});
+		}
 
-        const newRSVP = await pool.query(
-            `INSERT INTO event_attendance (user_id, event_id, did_rsvp)
+		const newRSVP = await pool.query(
+			`INSERT INTO event_attendance (user_id, event_id, did_rsvp)
              VALUES ($1, $2, $3)
              RETURNING *`,
-            [user_id, event_id, did_rsvp]
-        );
+			[user_id, event_id, did_rsvp]
+		);
 
-        return res.status(201).json({
-            message: "RSVP created successfully.",
-            rsvp: newRSVP.rows[0],
-        });
-    } catch (error) {
-        console.error("RSVP didn't work due to error - ", error.message);
-        return res.status(500).json({ message: "An error occurred while processing the RSVP." });
-    }
+		return res.status(201).json({
+			message: "RSVP created successfully.",
+			rsvp: newRSVP.rows[0],
+		});
+	} catch (error) {
+		console.error("RSVP didn't work due to error - ", error.message);
+		return res
+			.status(500)
+			.json({ message: "An error occurred while processing the RSVP." });
+	}
 });
 
 module.exports = router;
