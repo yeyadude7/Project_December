@@ -1,4 +1,4 @@
-const pool = require("./db");
+const pool = require("../db");
 const { faker } = require("@faker-js/faker");
 
 const isDebugMode = process.env.LOG_LEVEL === "DEBUG";

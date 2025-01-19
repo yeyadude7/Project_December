@@ -3,10 +3,10 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
-		"setup-db": "node setupDatabase.js",
-		"seed-db": "node populateDummyData.js",
+		"setup-db": "node scripts/setupDatabase.js",
+		"seed-db": "node scripts/populateDummyData.js",
 		"reset-db": "npm run setup-db && npm run seed-db",
-		"live-db": "node populateLiveData.js",
+		"live-db": "node scripts/populateLiveData.js",
 		"test": "jest",
 		"test --coverage": "jest --coverage",
 		"test:core": "jest --testPathIgnorePatterns=__tests__/db/",
