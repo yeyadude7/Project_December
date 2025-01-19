@@ -1,57 +1,129 @@
-This is the official README for Project December
+# Project December
 
-Running the web application (for development):
+Welcome to **Project December**! This is the official README providing an overview of the project and instructions for setup.
 
-This web application was built utilizing a Linux distribution known as Ubuntu. The version of Ubuntu utilized is 22.04. For Mac developers, Mac has optimized support for sudo and git controls. However, Windows users may resort to using WSL, a Linux environment supported for Windows users or possily a VM.
+---
 
-The frontend of this application was built using ReactJS (JavaScript), and Tailwind CSS as the framework. Node Packet Manager (npm) and NodeJS, is utilized to handle necessary dependencies.
+## Table of Contents
 
-For development, ensure that a Linux environment is utilized, and NodeJS is properly installed on your local machine.
+- [Overview](#overview)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+  - [Cloning the Repository](#cloning-the-repository)
+  - [Frontend Setup](#frontend-setup)
+  - [Backend Setup](#backend-setup)
+- [Static Hosting](#static-hosting)
 
-First, clone the repository within your local computer:
+---
 
+## Overview
+
+**Project December** is a full-stack web application designed to facilitate user interaction and event management. The application is built with a robust backend and a responsive, user-friendly frontend.
+
+- **Frontend**: Built using ReactJS and Tailwind CSS for a dynamic and modern user interface.
+- **Backend**: Powered by NodeJS with a PostgreSQL database, providing a scalable and efficient server-side framework.
+
+---
+
+## Technologies Used
+
+- **Frontend**: ReactJS, Tailwind CSS
+- **Backend**: NodeJS, Express, PostgreSQL
+- **Testing**: Jest
+- **Development Tools**: npm, WSL (for Windows users), Postman (for API testing)
+
+---
+
+## Getting Started
+
+### Cloning the Repository
+
+To begin, clone the repository to your local environment:
+
+```bash
 git clone https://github.com/yeyadude7/Project_December.git
+```
 
-To run the web application, open the repository folder within a IDE/terminal, and cd into frontend folder (called webapp):
+---
 
-cd webapp
+### Frontend Setup
 
-From here, install any necessary dependencies within the folder, and run the development server:
+1. Navigate to the `webapp` directory:
+   ```bash
+   cd webapp
+   ```
+2. Install necessary dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm start
+   ```
+4. Access the application at [http://localhost:3000](http://localhost:3000).
 
-npm install
-npm start
+For more detailed information, refer to the [README](webapp/README) located in the `webapp` folder.
 
-To run the server locally, go into the server/.env file and insert information for your postgresql database.
+---
 
-Then open a new terminal seperate from the web application, cd into backend folder (called server):
+### Backend Setup
 
-cd server
+1. Navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install necessary dependencies:
+   ```bash
+   npm install
+   ```
+3. Configure the `.env` file with your PostgreSQL database information:
+   ```text
+   DB_HOST=""
+   DB_PORT=""
+   DB_NAME=""
+   DB_USER=""
+   DB_PASSWORD=""
+   PORT=""
+   ```
+4. First-time setup commands:
 
-Install any necessary dependencies within the folder:
+   - Create the database schema:
+     ```bash
+     npm run setup-db
+     ```
+   - Populate dummy data:
+     ```bash
+     npm run seed-db
+     ```
+   - Reset the database (schema + dummy data):
+     ```bash
+     npm run reset-db
+     ```
 
-npm install
+5. Run the backend server:
 
-If this is your first time setting up the server there are commands to help.
+   ```bash
+   node server.js
+   ```
 
-To set up the database schema:
+6. For testing backend functionality:
+   - Run unit tests:
+     ```bash
+     npm test
+     ```
 
-npm run setup-db
+For additional details, refer to the [README](server/README) located in the `server` folder.
 
-To populate dummy data:
+---
 
-npm run seed-db
+## Static Hosting
 
-To reset the database (recreate schema and populate data):
+The current deployment of the application is available at:  
+[https://joseph-app-23imd.ondigitalocean.app/](https://joseph-app-23imd.ondigitalocean.app/)
 
-npm run reset-db
+---
 
-Unit-tests can be run using:
+## Notes for Developers
 
-npm test
-
-From here run the development server:
-
-node server.js
-
-Current static hosting site:
-https://joseph-app-23imd.ondigitalocean.app/
+- **Development Environment**: Linux (Ubuntu 22.04) is recommended. Windows users are advised to use [WSL](https://learn.microsoft.com/en-us/windows/wsl/) or a VM for a seamless development experience.
+- **Testing APIs**: Use tools like Postman or any REST API client for testing backend endpoints.

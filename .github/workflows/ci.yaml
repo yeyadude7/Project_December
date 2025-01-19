@@ -28,7 +28,14 @@ jobs:
         working-directory: ./server
         run: npm install
 
-      # 4. Run "core" tests (which ignore __tests__/db/).
-      - name: Run Core Tests (No DB)
+      # 4. Run tests and generate coverage
+      - name: Run Tests with Coverage
         working-directory: ./server
-        run: npm run test:core
+        run: npm run test:coverage
+
+      # 5. Upload coverage report as artifact
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./server/coverage
