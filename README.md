@@ -62,7 +62,7 @@ git clone https://github.com/yeyadude7/Project_December.git
    ```
 4. Access the application at [http://localhost:3000](http://localhost:3000).
 
-For more detailed information, refer to the [README](webapp/README) located in the `webapp` folder.
+For more detailed information, refer to the [README](webapp/README.md) located in the `webapp` folder.
 
 ---
 
@@ -107,12 +107,12 @@ For more detailed information, refer to the [README](webapp/README) located in t
    ```
 
 6. For testing backend functionality:
-   - Run unit tests:
-     ```bash
-     npm test
-     ```
 
-For additional details, refer to the [README](server/README) located in the `server` folder.
+   ```bash
+   npm test
+   ```
+
+For additional details, refer to the [README](server/README.md) located in the `server` folder.
 
 ---
 

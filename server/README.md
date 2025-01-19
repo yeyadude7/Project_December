@@ -128,9 +128,16 @@ The server will run on the port specified in your `.env` file (default: `PORT=50
 Unit tests ensure the robustness of the backend logic. To run the tests:
 
 1. Use the following command in the `server` directory:
-   ```bash
-   npm test
-   ```
+
+   - Run unit tests:
+     ```bash
+     npm test
+     ```
+   - Run unit tests with coverage:
+
+     ```bash
+     npm test --coverage
+     ```
 
 This will execute all unit tests defined for the backend.
 
