@@ -13,29 +13,42 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       # 1. Check out the repository
       - uses: actions/checkout@v3
 
-      # 2. Use Node.js 16
+      # 2. Set up Node.js
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # 3. Install dependencies in ./server
-      - name: Install Server Dependencies
+      # 3. Install dependencies
+      - name: Install Dependencies
         working-directory: ./server
         run: npm install
 
-      # 4. Run tests and generate coverage
-      - name: Run Tests with Coverage
+      # 4. Run tests
+      - name: Run Tests
         working-directory: ./server
-        run: npm run test --coverage
-
-      # 5. Upload coverage report as artifact
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: ./server/coverage
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: password
+        run: npm test
